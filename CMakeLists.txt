@@ -14,14 +14,12 @@ file(GLOB_RECURSE SOURCES
   CONFIGURE_DEPENDS
   "${CMAKE_SOURCE_DIR}/src/*.cpp"
   "${CMAKE_SOURCE_DIR}/src/*.cxx"
-)
-file(GLOB_RECURSE HEADERS
-  CONFIGURE_DEPENDS
   "${CMAKE_SOURCE_DIR}/src/*.h"
   "${CMAKE_SOURCE_DIR}/src/*.hpp"
 )
 
-add_executable(FOUL ${SOURCES} ${HEADERS})
+
+add_executable(FOUL ${SOURCES})
 
 set_target_properties(FOUL PROPERTIES
   WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
