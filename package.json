@@ -1,0 +1,26 @@
+{
+  "name": "foul",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon -q ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adise0/FOUL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Adise0/FOUL/issues"
+  },
+  "homepage": "https://github.com/Adise0/FOUL#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "typescript": "^6.0.2"
+  }
+}

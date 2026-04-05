@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf "Starting watcher...\n"
+
+run_after=1
+while getopts "n" opt; do
+  case "$opt" in
+  n) run_after=0 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+watchexec --shell=powershell -w src -w include -w assets -e cpp,h,html,js -r --stop-signal SIGTERM \
+  -E RUN_AFTER="$run_after" \
+  -- bash ./scripts/dev.sh
