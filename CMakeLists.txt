@@ -27,6 +27,21 @@ set_target_properties(FOUL PROPERTIES
   LINK_FLAGS_RELWITHDEBINFO "/ENTRY:mainCRTStartup"
 )
 
+file(GLOB_RECURSE FOUL_ALL_HEADERS "${CMAKE_SOURCE_DIR}/src/*.h")
+set(FOUL_INCLUDE_DIRS "")
+
+foreach(_header ${FOUL_ALL_HEADERS})
+  get_filename_component(_dir "${_header}" DIRECTORY)
+  list(APPEND FOUL_INCLUDE_DIRS "${_dir}")
+endforeach()
+
+list(REMOVE_DUPLICATES FOUL_INCLUDE_DIRS)
+
+target_include_directories(FOUL PRIVATE
+  "${CMAKE_SOURCE_DIR}/src"
+  ${FOUL_INCLUDE_DIRS}
+)
+
 target_link_libraries(FOUL PRIVATE Crow2D::Crow2D)
 
 crow2d_copy_runtime(FOUL)
