@@ -1,10 +1,7 @@
 
 
 #include "MainScene.h"
-#include <Crow2D/GameObject.h>
-#include <Crow2D/Scene.h>
-#include <Crow2D/WindowManager.h>
-#include <Crow2D/components/Camera.h>
+#include <Crow2D/Crow2D.h>
 namespace FOUL {
 
 using namespace Crow2D;
@@ -26,7 +23,7 @@ void MainScene::Load() {
 
   Sprite *bg = new Sprite("sprites/FieldBackground.png");
   global.AddComponent<Renderer>(bg, WindowManager::resolution / cam.screenPpu);
-
+  global.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
   // #endregion
 }
 } // namespace FOUL

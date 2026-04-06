@@ -24,6 +24,7 @@ add_executable(FOUL ${SOURCES})
 set_target_properties(FOUL PROPERTIES
   WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
   LINK_FLAGS_RELEASE "/ENTRY:mainCRTStartup"
+  LINK_FLAGS_RELWITHDEBINFO "/ENTRY:mainCRTStartup"
 )
 
 target_link_libraries(FOUL PRIVATE Crow2D::Crow2D)

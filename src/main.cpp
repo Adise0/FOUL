@@ -12,4 +12,5 @@ int main() {
   MainScene *mainScene = new MainScene();
 
   Engine::Run(*mainScene);
+  printf("Bye bye!\n");
 }
