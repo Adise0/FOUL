@@ -12,8 +12,9 @@ class PlayerController : public Crow2D::Components::Behaviour {
 private:
   Crow2D::GameObject *barrier = nullptr;
   short playerCount = 3;
+  float speed = 12;
   std::vector<Crow2D::Components::Renderer> players;
-  Crow2D::Components::BoxCollider *collider;
+  Crow2D::Components::BoxCollider *collider = nullptr;
   // #endregion
 
   // #region Crow2D
