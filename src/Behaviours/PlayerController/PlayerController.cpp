@@ -24,7 +24,7 @@ void PlayerController::Awake() {
     playerGO.transform->localPosition = playerPos;
   }
 
-  Vector2 colliderSize(Data::xPerPlayer * playerCount, Data::xPerPlayer);
+  Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
   collider->isTrigger = true;
 }
@@ -75,8 +75,32 @@ void PlayerController::CheckBalls() {
 void PlayerController::OnColliderEnter(const Collider &other) {
   // #region OnTriggerEnter
   Ball *ball = other.gameObject->GetComponent<Ball>();
-  printf("Forward is: %s\n", transform->forward.get().ToString().c_str());
-  ball->direction = transform->forward;
+  if (!ball) return;
+
+  Vector2 ballPos(ball->transform->position.get());
+  Vector2 paddlePos(transform->position.get());
+  Vector2 forward = transform->forward.get();
+  Vector2 right(forward.y, -forward.x);
+
+  float totalWidth = Data::xPerPlayer * playerCount * 0.5f;
+  Vector2 leftPoint = paddlePos - right * totalWidth;
+  Vector2 rightPoint = paddlePos + right * totalWidth;
+
+  Vector2 toFromLeft = (ballPos - leftPoint).Normalized();
+  Vector2 toFromRight = (ballPos - rightPoint).Normalized();
+
+  float dotLeft = toFromLeft.x * right.x + toFromLeft.y * right.y;
+  float dotRight = toFromRight.x * right.x + toFromRight.y * right.y;
+
+  if (dotLeft > 0 && dotRight > 0) {
+    ball->direction = right;
+  } else if (dotLeft < 0 && dotRight < 0) {
+    ball->direction = -right;
+  } else {
+    float dotForward = (ballPos - paddlePos).Normalized().x * forward.x +
+                       (ballPos - paddlePos).Normalized().y * forward.y;
+    ball->direction = dotForward >= 0 ? forward : -forward;
+  }
   // #endregion
 }
 } // namespace FOUL::Behaviours
