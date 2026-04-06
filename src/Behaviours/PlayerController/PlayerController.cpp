@@ -1,10 +1,10 @@
 #include "PlayerController.h"
 #include "Data.h"
 #include <Crow2D/InputManager.h>
-#include <Crow2D/components/colliders/BoxCollider.h>
-#include <Crow2D/dataObjects/Sprite.h>
 #include <Crow2D/dataObjects/Vectors.h>
+#include <SDL3/SDL_mouse.h>
 #include <algorithm>
+#include <cstdio>
 #include <string>
 
 namespace FOUL::Behaviours {
@@ -26,12 +26,14 @@ void PlayerController::Awake() {
 
   Vector2 colliderSize(Data::xPerPlayer * playerCount, Data::xPerPlayer);
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
+  collider->isTrigger = true;
 }
 
 
 void PlayerController::Update() {
   // #region Update
   Move();
+  CheckBalls();
   // #endregion
 }
 
@@ -40,6 +42,15 @@ void PlayerController::Move() {
   Vector2 dir;
   if (InputManager::GetKey("A").isPressed) dir += Vector2::Left;
   if (InputManager::GetKey("D").isPressed) dir += Vector2::Right;
+  float deg = transform->rotation;
+  if (InputManager::GetKey(InputManager::GetMouseButtonName(SDL_BUTTON_RIGHT)).isPressed)
+    deg += 90 * Time::deltaTime;
+
+  if (InputManager::GetKey(InputManager::GetMouseButtonName(SDL_BUTTON_LEFT)).isPressed)
+    deg -= 90 * Time::deltaTime;
+
+  deg = std::clamp(deg, -80.0f, 80.0f);
+  transform->rotation = deg;
 
   Vector2 delta = dir * speed * Time::deltaTime;
   Vector3 pos = transform->position + Vector3(delta);
@@ -47,7 +58,25 @@ void PlayerController::Move() {
 
   pos.x = std::clamp(pos.x, -Data::XLimit + halfWidth, Data::XLimit - halfWidth);
   transform->position = pos;
+  // #endregion
+}
 
+void PlayerController::CheckBalls() {
+  // #region CheckBall
+
+  for (Ball *ball : balls) {
+    if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
+    ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
+    ball->direction = Vector2::Down;
+  }
+  // #endregion
+}
+
+void PlayerController::OnColliderEnter(const Collider &other) {
+  // #region OnTriggerEnter
+  Ball *ball = other.gameObject->GetComponent<Ball>();
+  printf("Forward is: %s\n", transform->forward.get().ToString().c_str());
+  ball->direction = transform->forward;
   // #endregion
 }
 } // namespace FOUL::Behaviours
