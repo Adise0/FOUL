@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ball.h"
 #include <Crow2D/Crow2D.h>
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
@@ -48,8 +49,8 @@ private:
 public:
   void DestroyPlatform(Crow2D::GameObject *platform);
   void Reset();
-  void SpawnBall(const BallType &type, const Crow2D::Types::Vector2 &pos,
-                 const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down);
+  Ball *SpawnBall(const BallType &type, const Crow2D::Types::Vector2 &pos,
+                  const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down);
   void RemoveBall(Crow2D::GameObject *ball);
 
 private:

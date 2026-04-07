@@ -108,8 +108,8 @@ void LevelManager::SpawnNormalRow() {
   // #endregion
 }
 
-void LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
-                             const Crow2D::Types::Vector2 &dir) {
+Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
+                              const Crow2D::Types::Vector2 &dir) {
   // #region SpawnBall
   GameObject &ballGO = gameObject->scene->rootGameObject->CreateChild("Ball");
   ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
@@ -132,6 +132,7 @@ void LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
 
   ball->direction = dir;
   balls.push_back(&ballGO);
+  return ball;
   // #endregion
 }
 
@@ -154,7 +155,8 @@ void LevelManager::CheckBalls() {
       return;
     }
     freeBalls--;
-    SpawnBall(BallType::Normal, Vector2::Zero);
+    Ball *ball = SpawnBall(BallType::Normal, Vector2::Zero);
+    ball->waitTime = 1;
     // TODO: wait a second
   }
   // #endregion

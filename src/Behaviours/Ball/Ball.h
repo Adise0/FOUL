@@ -11,6 +11,9 @@ public:
   Crow2D::Types::Vector2 direction = Crow2D::Types::Vector2::Down;
   Crow2D::Components::Renderer *renderer;
 
+public:
+  float waitTime = 0;
+
 private:
   float speed = 15;
   // #endregion

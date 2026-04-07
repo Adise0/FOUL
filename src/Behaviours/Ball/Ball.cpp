@@ -19,6 +19,10 @@ void Ball::Awake() {
 
 void Ball::Update() {
   // #region Update
+  if (waitTime > 0) {
+    waitTime -= Time::deltaTime;
+    return;
+  } else if (waitTime != 0) waitTime = 0;
   Move();
   // #endregion
 }
