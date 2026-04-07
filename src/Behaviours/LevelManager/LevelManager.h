@@ -9,7 +9,7 @@
 
 namespace FOUL::Behaviours {
 
-enum class PlatformType { Normal, Goal, Player, Ball, FireBall };
+enum class PlatformType { Normal, Goal, Player, Ball, FireBall, Count };
 enum class BallType { Normal, Fire };
 class LevelManager : public Crow2D::Components::Behaviour {
   // #region Data
@@ -18,7 +18,6 @@ public:
   static float levelSpeed;
   static std::unordered_map<Crow2D::GameObject *, PlatformType> platforms;
   static int points;
-  static short freeBalls;
 
 private:
   static constexpr short MinPlatformsPerRow = 2;

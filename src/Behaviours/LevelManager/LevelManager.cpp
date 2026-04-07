@@ -4,6 +4,7 @@
 #include "PlayerController.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
+#include <SDL3/SDL_pixels.h>
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
@@ -18,7 +19,7 @@ LevelManager *LevelManager::Singleton = nullptr;
 float LevelManager::levelSpeed = 7;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
-short LevelManager::freeBalls = 3;
+
 
 
 void LevelManager::SetupSingleton() {
@@ -67,16 +68,23 @@ void LevelManager::Reset() {
   levelSpeed = 7;
   currentWaitTime = levelSpeed;
   currentTimer = currentWaitTime;
-  freeBalls = 3;
   // #endregion
 }
 
 void LevelManager::DestroyPlatform(Crow2D::GameObject *platform) {
   // #region DestroyPlatform
   if (!platform) return;
-  Destroy(*platform);
+
   auto it = platforms.find(platform);
   if (it == platforms.end()) return;
+
+  switch (it->second) {
+  case PlatformType::Ball:
+    SpawnBall(BallType::Normal, (Vector2)platform->transform->position);
+    break;
+  }
+
+  Destroy(*platform);
   platforms.erase(it);
   // #endregion
 }
@@ -89,20 +97,32 @@ void LevelManager::SpawnNormalRow() {
   const float Gap = 0.7f;
 
   for (short i = 0; i <= nOfPlatforms; i++) {
+
+    int platformType = std::rand() % (int)PlatformType::Count;
     nextPlatform++;
     GameObject &platform =
         gameObject->CreateChild(("Platform_" + std::to_string(nextPlatform)).c_str());
 
     BoxCollider &col = platform.AddComponent<BoxCollider>(Vector2(PlatformWidth, 0.5f));
     col.isTrigger = true;
-    platform.AddComponent<Renderer>(Primitives::Square, Vector2(PlatformWidth, 0.5f));
+    Renderer &renderer =
+        platform.AddComponent<Renderer>(Primitives::Square, Vector2(PlatformWidth, 0.5f));
+
+
 
     Vector3 pos((float)i * (PlatformWidth + Gap) -
                     (float)(nOfPlatforms * (PlatformWidth + Gap)) / 2,
                 SpawnY, 0);
     platform.transform->position = pos;
 
-    platforms[&platform] = PlatformType::Normal;
+    PlatformType type = (PlatformType)platformType;
+    switch (type) {
+    case PlatformType::Ball:
+      renderer.SetColor(SDL_Color{255, 0, 255, 255});
+      break;
+    }
+
+    platforms[&platform] = type;
   }
   // #endregion
 }
@@ -129,6 +149,7 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
     throw std::runtime_error("Unknown ball type " + std::to_string((int)type));
   }
 
+  ballGO.transform->position = Vector3(pos);
   ball->direction = dir;
   balls.push_back(&ballGO);
   return ball;
@@ -142,18 +163,15 @@ void LevelManager::CheckBalls() {
     if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
     ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
     Destroy(*ball);
-    PlayerController::Singleton->RemovePlayer();
     ballFell = true;
   }
   if (!ballFell || gameOver) return;
 
   std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
   if (balls.empty()) {
-    if (freeBalls == 0) {
-      LevelManager::Singleton->gameOver = true;
-      return;
-    }
-    freeBalls--;
+
+    PlayerController::Singleton->RemovePlayer();
+    if (gameOver) return;
     Ball *ball = SpawnBall(BallType::Normal, Vector2::Zero);
     ball->waitTime = 1;
     // TODO: wait a second
