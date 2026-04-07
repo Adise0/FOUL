@@ -18,6 +18,7 @@ LevelManager *LevelManager::Singleton = nullptr;
 float LevelManager::levelSpeed = 7;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
+short LevelManager::freeBalls = 3;
 
 
 void LevelManager::SetupSingleton() {
@@ -45,6 +46,8 @@ void LevelManager::Start() {
 void LevelManager::Update() {
   // #region Update
   if (gameOver) return;
+  CheckBalls();
+
   currentTimer += Time::deltaTime;
   if (currentTimer < currentWaitTime) return;
 
@@ -65,6 +68,7 @@ void LevelManager::Reset() {
   levelSpeed = 7;
   currentWaitTime = levelSpeed;
   currentTimer = currentWaitTime;
+  freeBalls = 3;
   // #endregion
 }
 
@@ -105,7 +109,7 @@ void LevelManager::SpawnNormalRow() {
 }
 
 void LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
-                             const Crow2D::Types::Vector2 &dir) const {
+                             const Crow2D::Types::Vector2 &dir) {
   // #region SpawnBall
   GameObject &ballGO = gameObject->scene->rootGameObject->CreateChild("Ball");
   ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
@@ -127,8 +131,32 @@ void LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
   }
 
   ball->direction = dir;
+  balls.push_back(&ballGO);
+  // #endregion
+}
 
-  PlayerController::Singleton->balls.push_back(&ballGO);
+void LevelManager::CheckBalls() {
+  // #region CheckBall
+  bool ballFell = false;
+  for (GameObject *ball : balls) {
+    if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
+    ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
+    Destroy(*ball);
+    PlayerController::Singleton->RemovePlayer();
+    ballFell = true;
+  }
+  if (!ballFell || gameOver) return;
+
+  std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
+  if (balls.empty()) {
+    if (freeBalls == 0) {
+      LevelManager::Singleton->gameOver = true;
+      return;
+    }
+    freeBalls--;
+    SpawnBall(BallType::Normal, Vector2::Zero);
+    // TODO: wait a second
+  }
   // #endregion
 }
 

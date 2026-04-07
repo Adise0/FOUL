@@ -14,7 +14,7 @@ class PlayerController : public Crow2D::Components::Behaviour {
   // #region Data
 public:
   static PlayerController *Singleton;
-  std::vector<Crow2D::GameObject *> balls;
+
 
 private:
   Crow2D::GameObject *barrier = nullptr;
@@ -36,11 +36,12 @@ private:
 private:
   void SetupSingleton();
   void Move();
-  void CheckBalls();
   void UpdatePlayers();
-  void RemovePlayer();
 
   void BounceNormalBall(Ball *ball) const;
+
+public:
+  void RemovePlayer();
   // #endregion
 };
 } // namespace FOUL::Behaviours

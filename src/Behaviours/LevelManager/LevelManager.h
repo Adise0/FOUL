@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <unordered_map>
 #include <vector>
@@ -16,6 +17,7 @@ public:
   static float levelSpeed;
   static std::unordered_map<Crow2D::GameObject *, PlatformType> platforms;
   static int points;
+  static short freeBalls;
 
 private:
   static constexpr short MinPlatformsPerRow = 2;
@@ -30,6 +32,7 @@ private:
   float currentWaitTime = levelSpeed;
   float currentTimer = currentWaitTime;
   int nextPlatform = 0;
+  std::vector<Crow2D::GameObject *> balls;
 
 public:
   // #endregion
@@ -46,9 +49,11 @@ public:
   void DestroyPlatform(Crow2D::GameObject *platform);
   void Reset();
   void SpawnBall(const BallType &type, const Crow2D::Types::Vector2 &pos,
-                 const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down) const;
+                 const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down);
+  void RemoveBall(Crow2D::GameObject *ball);
 
 private:
+  void CheckBalls();
   void SetupSingleton();
   void SpawnNormalRow();
   // #endregion

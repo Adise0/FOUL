@@ -44,7 +44,6 @@ void PlayerController::Update() {
   // #region Update
   if (LevelManager::Singleton->gameOver) return;
   Move();
-  CheckBalls();
   // #endregion
 }
 
@@ -72,24 +71,7 @@ void PlayerController::Move() {
   // #endregion
 }
 
-void PlayerController::CheckBalls() {
-  // #region CheckBall
-  bool ballFell = false;
-  for (GameObject *ball : balls) {
-    if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
-    ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
-    Destroy(*ball);
-    playerCount--;
-    ballFell = true;
-  }
-  if (!ballFell) return;
 
-  std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
-
-  UpdatePlayers();
-  if (balls.empty()) LevelManager::Singleton->gameOver = true;
-  // #endregion
-}
 
 void PlayerController::UpdatePlayers() {
   // #region UpdatePlayers
