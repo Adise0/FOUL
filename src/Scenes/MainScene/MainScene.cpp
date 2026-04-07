@@ -51,7 +51,8 @@ void MainScene::LoadPlayer() {
   GameObject &ballGO = rootGameObject->CreateChild("Ball");
   Ball &ball = ballGO.AddComponent<Ball>();
   ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
-  ballGO.AddComponent<CircleCollider>(0.5f);
+  CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
+  ballCollider.drawGizmos = true;
   ballGO.AddComponent<RigidBody>();
 
   playerController.balls.push_back(&ball);

@@ -27,6 +27,7 @@ void PlayerController::Awake() {
   Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
   collider->isTrigger = true;
+  collider->drawGizmos = true;
 }
 
 
