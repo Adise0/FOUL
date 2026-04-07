@@ -93,9 +93,9 @@ void PlayerController::OnColliderEnter(const Collider &other) {
   float dotLeft = toFromLeft.x * right.x + toFromLeft.y * right.y;
   float dotRight = toFromRight.x * right.x + toFromRight.y * right.y;
 
-  if (dotLeft > 0 && dotRight > 0) {
+  if (dotRight > 0.5f && dotLeft > 0.9f) {
     ball->direction = right;
-  } else if (dotLeft < 0 && dotRight < 0) {
+  } else if (dotLeft < -0.5f && dotRight < -0.9f) {
     ball->direction = -right;
   } else {
     float dotForward = (ballPos - paddlePos).Normalized().x * forward.x +
