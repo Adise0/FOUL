@@ -34,7 +34,6 @@ void LevelManager::SetupSingleton() {
 void LevelManager::Awake() {
   // #region Awake
   SetupSingleton();
-  std::srand(time(NULL));
   // #endregion
 }
 

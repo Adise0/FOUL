@@ -7,6 +7,7 @@
 #include <SDL3/SDL_mouse.h>
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -15,6 +16,8 @@ using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
+
+static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 
 PlayerController *PlayerController::Singleton = nullptr;
 
@@ -135,7 +138,11 @@ void PlayerController::BounceNormalBall(Ball *ball) const {
   } else {
     float dotForward = (ballPos - paddlePos).Normalized().x * forward.x +
                        (ballPos - paddlePos).Normalized().y * forward.y;
-    ball->direction = dotForward >= 0 ? forward : -forward;
+
+    int variance = (std::rand() % 11) - 5;
+    float rad = variance * DEG2RAD;
+    Vector2 varianceDir(std::sin(rad), std::cos(rad));
+    ball->direction = dotForward >= 0 ? (forward + varianceDir).Normalized() : -forward;
   }
   // #endregion
 }

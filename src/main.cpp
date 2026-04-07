@@ -7,7 +7,7 @@
 using namespace FOUL;
 using namespace Crow2D;
 int main() {
-
+  std::srand(time(NULL));
   Config::Init("FOUL!");
   MainScene *mainScene = new MainScene();
 
