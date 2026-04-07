@@ -4,9 +4,10 @@ project(FOUL VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Point CMake to the installed Crow2D package
+include(local.cmake OPTIONAL)
+
 find_package(Crow2D REQUIRED
-  PATHS "C:/Projects/Apps/Crow2D/Crow2D/out/Crow2D_SDK"
+  PATHS "${CROW2D_SDK_PATH}"
   NO_DEFAULT_PATH
 )
 
