@@ -24,6 +24,8 @@ private:
   // #region Methods
 private:
   void Move();
+
+  void OnTriggerEnter(const Crow2D::Components::Collider &other) override;
   // #endregion
 };
 } // namespace FOUL::Behaviours

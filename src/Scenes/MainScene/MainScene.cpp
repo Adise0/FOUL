@@ -3,6 +3,7 @@
 #include "MainScene.h"
 #include "Ball.h"
 #include "Data.h"
+#include "LevelManager.h"
 #include "PlayerController.h"
 #include <Crow2D/Crow2D.h>
 #include <Crow2D/GameObject.h>
@@ -38,6 +39,8 @@ void MainScene::LoadBackground() {
 
   Sprite *bg = new Sprite("sprites/FieldBackground.png");
   global.AddComponent<Renderer>(bg, WindowManager::resolution / cam.screenPpu);
+
+  global.AddComponent<LevelManager>();
   // #endregion
 }
 
