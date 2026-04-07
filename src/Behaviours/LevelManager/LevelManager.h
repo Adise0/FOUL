@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/dataObjects/Vectors.h>
 #include <unordered_map>
 #include <vector>
 
 namespace FOUL::Behaviours {
 
 enum class PlatformType { Normal, Goal, Player, Ball, FireBall };
-
+enum class BallType { Normal, Fire };
 class LevelManager : public Crow2D::Components::Behaviour {
   // #region Data
 public:
@@ -22,12 +23,15 @@ private:
   static constexpr float SpawnY = 9;
   static constexpr float PlatformWidth = 4;
 
+public:
+  bool gameOver = false;
+
 private:
   float currentWaitTime = levelSpeed;
   float currentTimer = currentWaitTime;
   int nextPlatform = 0;
 
-  bool gameOver = false;
+public:
   // #endregion
 
   // #region Crow2D
@@ -41,6 +45,8 @@ private:
 public:
   void DestroyPlatform(Crow2D::GameObject *platform);
   void Reset();
+  void SpawnBall(const BallType &type, const Crow2D::Types::Vector2 &pos,
+                 const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down) const;
 
 private:
   void SetupSingleton();

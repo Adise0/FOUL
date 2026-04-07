@@ -1,11 +1,14 @@
 #include "PlayerController.h"
 #include "Data.h"
+#include "LevelManager.h"
+#include <Crow2D/GameObject.h>
 #include <Crow2D/InputManager.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_mouse.h>
 #include <algorithm>
 #include <cstdio>
 #include <string>
+#include <vector>
 
 namespace FOUL::Behaviours {
 using namespace Crow2D;
@@ -13,16 +16,21 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
 
-void PlayerController::Awake() {
-  for (int i = 0; i < playerCount; i++) {
-    Vector3 playerPos(
-        (float)i * Data::xPerPlayer - ((float)(playerCount - 1) * Data::xPerPlayer) / 2, 0, 0);
-    GameObject &playerGO = gameObject->CreateChild(("Player_" + std::to_string(i)).c_str());
-    Renderer &playerRnederer = playerGO.AddComponent<Renderer>(
-        Primitives::Circle, Vector2(Data::xPerPlayer - 0.1f, Data::xPerPlayer));
+PlayerController *PlayerController::Singleton = nullptr;
 
-    playerGO.transform->localPosition = playerPos;
+void PlayerController::SetupSingleton() {
+  // #region SetupSingleton
+  if (Singleton != nullptr && Singleton != this) {
+    Destroy(this);
+    return;
   }
+  Singleton = this;
+  // #endregion
+}
+
+
+void PlayerController::Awake() {
+  SetupSingleton();
 
   Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
@@ -30,9 +38,11 @@ void PlayerController::Awake() {
   collider->drawGizmos = true;
 }
 
+void PlayerController::Start() { UpdatePlayers(); }
 
 void PlayerController::Update() {
   // #region Update
+  if (LevelManager::Singleton->gameOver) return;
   Move();
   CheckBalls();
   // #endregion
@@ -64,20 +74,63 @@ void PlayerController::Move() {
 
 void PlayerController::CheckBalls() {
   // #region CheckBall
-
-  for (Ball *ball : balls) {
+  bool ballFell = false;
+  for (GameObject *ball : balls) {
     if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
     ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
-    ball->direction = Vector2::Down;
+    Destroy(*ball);
+    playerCount--;
+    ballFell = true;
   }
+  if (!ballFell) return;
+
+  std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
+
+  UpdatePlayers();
+  if (balls.empty()) LevelManager::Singleton->gameOver = true;
   // #endregion
 }
 
-void PlayerController::OnColliderEnter(const Collider &other) {
-  // #region OnTriggerEnter
-  Ball *ball = other.gameObject->GetComponent<Ball>();
-  if (!ball) return;
+void PlayerController::UpdatePlayers() {
+  // #region UpdatePlayers
+  if (_playerCount == playerCount) return;
+  _playerCount = playerCount;
 
+  for (GameObject *player : players) {
+    Destroy(*player);
+  }
+  players.clear();
+
+  for (int i = 0; i < playerCount; i++) {
+    Vector3 playerPos(
+        (float)i * Data::xPerPlayer - ((float)(playerCount - 1) * Data::xPerPlayer) / 2, 0, 0);
+    GameObject &playerGO = gameObject->CreateChild(("Player_" + std::to_string(i)).c_str());
+    Renderer &playerRnederer = playerGO.AddComponent<Renderer>(
+        Primitives::Circle, Vector2(Data::xPerPlayer - 0.1f, Data::xPerPlayer));
+
+    playerGO.transform->localPosition = playerPos;
+    players.push_back(&playerGO);
+  }
+
+  Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
+  collider->SetSize(colliderSize);
+
+
+  // #endregion
+}
+
+void PlayerController::RemovePlayer() {
+  // #region RemovePlayer
+  playerCount--;
+  UpdatePlayers();
+  if (playerCount != 0) return;
+
+  LevelManager::Singleton->gameOver = true;
+  // #endregion
+}
+
+void PlayerController::BounceNormalBall(Ball *ball) const {
+  // #region BounceNormalBall
   Vector2 ballPos(ball->transform->position.get());
   Vector2 paddlePos(transform->position.get());
   Vector2 forward = transform->forward.get();
@@ -102,6 +155,14 @@ void PlayerController::OnColliderEnter(const Collider &other) {
                        (ballPos - paddlePos).Normalized().y * forward.y;
     ball->direction = dotForward >= 0 ? forward : -forward;
   }
+  // #endregion
+}
+
+void PlayerController::OnColliderEnter(const Collider &other) {
+  // #region OnTriggerEnter
+  Ball *ball = other.gameObject->GetComponent<Ball>();
+  if (ball) BounceNormalBall(ball);
+
   // #endregion
 }
 } // namespace FOUL::Behaviours

@@ -30,7 +30,6 @@ void Ball::Move() {
   if ((pos.x <= -Data::XLimit && direction.x < 0) || (pos.x >= Data::XLimit && direction.x > 0))
     direction.x = -direction.x;
   if (pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
-
   // #endregion
 }
 

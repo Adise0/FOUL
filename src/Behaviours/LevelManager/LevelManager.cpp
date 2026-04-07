@@ -1,8 +1,11 @@
 #include "LevelManager.h"
+#include "Ball.h"
 #include "Data.h"
+#include "PlayerController.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <cstdlib>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -34,7 +37,10 @@ void LevelManager::Awake() {
   // #endregion
 }
 
-void LevelManager::Start() { gameOver = false; }
+void LevelManager::Start() {
+  gameOver = false;
+  SpawnBall(BallType::Normal, Vector2::Zero);
+}
 
 void LevelManager::Update() {
   // #region Update
@@ -95,6 +101,34 @@ void LevelManager::SpawnNormalRow() {
 
     platforms[&platform] = PlatformType::Normal;
   }
+  // #endregion
+}
+
+void LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
+                             const Crow2D::Types::Vector2 &dir) const {
+  // #region SpawnBall
+  GameObject &ballGO = gameObject->scene->rootGameObject->CreateChild("Ball");
+  ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
+  CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
+  ballCollider.drawGizmos = true;
+  RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
+  ballRB.collisionMode = CollisionMode::Continuous;
+
+  Ball *ball;
+  switch (type) {
+  case BallType::Normal:
+    ball = &ballGO.AddComponent<Ball>();
+    break;
+  // case BallType::Fire:
+  //   // ballGO.AddComponent<FireBall>();
+  //   break;
+  default:
+    throw std::runtime_error("Unknown ball type " + std::to_string((int)type));
+  }
+
+  ball->direction = dir;
+
+  PlayerController::Singleton->balls.push_back(&ballGO);
   // #endregion
 }
 

@@ -51,15 +51,7 @@ void MainScene::LoadPlayer() {
   PlayerController &playerController = playerControllderGO.AddComponent<PlayerController>();
   playerControllderGO.transform->position = Vector3(0, Data::PaddleY, 0);
 
-  GameObject &ballGO = rootGameObject->CreateChild("Ball");
-  Ball &ball = ballGO.AddComponent<Ball>();
-  ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
-  CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
-  ballCollider.drawGizmos = true;
-  RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
-  ballRB.collisionMode = CollisionMode::Continuous;
 
-  playerController.balls.push_back(&ball);
   // #endregion
 }
 } // namespace FOUL

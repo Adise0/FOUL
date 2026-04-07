@@ -2,6 +2,7 @@
 
 #include "Ball.h"
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/GameObject.h>
 #include <Crow2D/components/Renderer.h>
 #include <Crow2D/components/colliders/BoxCollider.h>
 #include <Crow2D/components/colliders/Collider.h>
@@ -12,25 +13,34 @@ namespace FOUL::Behaviours {
 class PlayerController : public Crow2D::Components::Behaviour {
   // #region Data
 public:
-  std::vector<Ball *> balls;
+  static PlayerController *Singleton;
+  std::vector<Crow2D::GameObject *> balls;
 
 private:
   Crow2D::GameObject *barrier = nullptr;
   short playerCount = 3;
+  short _playerCount = 0;
   float speed = 12;
-  std::vector<Crow2D::Components::Renderer> players;
+  std::vector<Crow2D::GameObject *> players;
   Crow2D::Components::BoxCollider *collider = nullptr;
   // #endregion
 
   // #region Crow2D
   void Awake() override;
+  void Start() override;
   void Update() override;
   void OnColliderEnter(const Crow2D::Components::Collider &other) override;
   // #endregion
 
   // #region Methods
+private:
+  void SetupSingleton();
   void Move();
   void CheckBalls();
+  void UpdatePlayers();
+  void RemovePlayer();
+
+  void BounceNormalBall(Ball *ball) const;
   // #endregion
 };
 } // namespace FOUL::Behaviours
