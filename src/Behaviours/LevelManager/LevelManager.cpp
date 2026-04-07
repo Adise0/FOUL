@@ -2,6 +2,7 @@
 #include "Ball.h"
 #include "Data.h"
 #include "PlayerController.h"
+#include "Recrut.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_pixels.h>
@@ -71,8 +72,8 @@ void LevelManager::Reset() {
   // #endregion
 }
 
-void LevelManager::DestroyPlatform(Crow2D::GameObject *platform) {
-  // #region DestroyPlatform
+void LevelManager::HitPlatform(GameObject *platform) {
+  // #region HitPlatform
   if (!platform) return;
 
   auto it = platforms.find(platform);
@@ -82,7 +83,23 @@ void LevelManager::DestroyPlatform(Crow2D::GameObject *platform) {
   case PlatformType::Ball:
     SpawnBall(BallType::Normal, (Vector2)platform->transform->position);
     break;
+
+  case PlatformType::Player:
+    SpawnRecrut((Vector2)platform->transform->position);
+    break;
   }
+
+  DestroyPlatform(platform);
+  // #endregion
+}
+
+void LevelManager::DestroyPlatform(GameObject *platform) {
+  // #region DestroyPlatform
+  if (!platform) return;
+
+  auto it = platforms.find(platform);
+  if (it == platforms.end()) return;
+
 
   Destroy(*platform);
   platforms.erase(it);
@@ -120,6 +137,9 @@ void LevelManager::SpawnNormalRow() {
     case PlatformType::Ball:
       renderer.SetColor(SDL_Color{255, 0, 255, 255});
       break;
+    case PlatformType::Player:
+      renderer.SetColor(SDL_Color{0, 0, 255, 255});
+      break;
     }
 
     platforms[&platform] = type;
@@ -127,13 +147,12 @@ void LevelManager::SpawnNormalRow() {
   // #endregion
 }
 
-Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos,
-                              const Crow2D::Types::Vector2 &dir) {
+Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Vector2 &dir) {
   // #region SpawnBall
   GameObject &ballGO = gameObject->scene->rootGameObject->CreateChild("Ball");
   ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
   CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
-  ballCollider.drawGizmos = true;
+
   RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
   ballRB.collisionMode = CollisionMode::Continuous;
 
@@ -176,6 +195,21 @@ void LevelManager::CheckBalls() {
     ball->waitTime = 1;
     // TODO: wait a second
   }
+  // #endregion
+}
+
+void LevelManager::SpawnRecrut(const Vector2 &pos) {
+  // #region SpawnRecrut
+  GameObject &recrutGO = gameObject->scene->rootGameObject->CreateChild("Ball");
+  recrutGO.transform->position = Vector3(pos);
+  recrutGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f),
+                                  SDL_Color{0, 0, 255, 255});
+  recrutGO.AddComponent<CircleCollider>(0.25f);
+
+  RigidBody &recrutRB = recrutGO.AddComponent<RigidBody>();
+  recrutRB.collisionMode = CollisionMode::Continuous;
+
+  recrutGO.AddComponent<Recrut>();
   // #endregion
 }
 

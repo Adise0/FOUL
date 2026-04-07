@@ -1,6 +1,7 @@
 #include "Ball.h"
 #include "Data.h"
 #include "LevelManager.h"
+#include "PlayerController.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
 
@@ -19,6 +20,8 @@ void Ball::Awake() {
 
 void Ball::Update() {
   // #region Update
+  if (LevelManager::Singleton->gameOver) return;
+
   if (waitTime > 0) {
     waitTime -= Time::deltaTime;
     return;
@@ -31,16 +34,19 @@ void Ball::Move() {
   // #region Move
   transform->Translate(direction * speed * Time::deltaTime);
   Vector2 pos = Vector2(transform->position);
+
   if ((pos.x <= -Data::XLimit && direction.x < 0) || (pos.x >= Data::XLimit && direction.x > 0))
     direction.x = -direction.x;
   if (pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
   // #endregion
 }
 
-void Ball::OnTriggerEnter(const Crow2D::Components::Collider &other) {
+void Ball::OnTriggerEnter(const Collider &other) {
   // #region OnTriggerEnter
   GameObject *go = other.gameObject;
+
   if (!go->name.get().starts_with("Platform")) return;
+
 
   BoxCollider *box = go->GetComponent<BoxCollider>();
   float angle = go->transform->rotation * (3.14159f / 180.0f);
@@ -64,7 +70,10 @@ void Ball::OnTriggerEnter(const Crow2D::Components::Collider &other) {
                     localNormal.x * std::sin(angle) + localNormal.y * std::cos(angle)};
 
   direction = direction - normal * (2.0f * direction.Dot(normal));
-  LevelManager::Singleton->DestroyPlatform(go);
+
+
+  LevelManager::Singleton->HitPlatform(go);
+
   // #endregion
 }
 

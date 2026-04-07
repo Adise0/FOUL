@@ -46,16 +46,20 @@ private:
 
   // #region Methods
 public:
-  void DestroyPlatform(Crow2D::GameObject *platform);
   void Reset();
   Ball *SpawnBall(const BallType &type, const Crow2D::Types::Vector2 &pos,
                   const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down);
   void RemoveBall(Crow2D::GameObject *ball);
 
+  void HitPlatform(Crow2D::GameObject *platform);
+
 private:
+  void DestroyPlatform(Crow2D::GameObject *platform);
+  void SpawnRecrut(const Crow2D::Types::Vector2 &pos);
   void CheckBalls();
   void SetupSingleton();
   void SpawnNormalRow();
+
   // #endregion
 };
 } // namespace FOUL::Behaviours

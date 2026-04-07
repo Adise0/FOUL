@@ -113,6 +113,12 @@ void PlayerController::RemovePlayer() {
   LevelManager::Singleton->gameOver = true;
   // #endregion
 }
+void PlayerController::AddPlayer() {
+  // #region AddPlayer
+  playerCount++;
+  UpdatePlayers();
+  // #endregion
+}
 
 void PlayerController::BounceNormalBall(Ball *ball) const {
   // #region BounceNormalBall

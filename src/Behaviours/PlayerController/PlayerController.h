@@ -42,6 +42,7 @@ private:
 
 public:
   void RemovePlayer();
+  void AddPlayer();
   // #endregion
 };
 } // namespace FOUL::Behaviours
