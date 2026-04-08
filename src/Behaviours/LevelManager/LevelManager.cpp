@@ -4,8 +4,10 @@
 #include "PlayerController.h"
 #include "Recrut.h"
 #include <Crow2D/GameObject.h>
+#include <Crow2D/components/colliders/CircleCollider.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_surface.h>
 #include <cmath>
 #include <cstdlib>
 #include <functional>
@@ -19,6 +21,7 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
+
 
 LevelManager *LevelManager::Singleton = nullptr;
 float LevelManager::levelSpeed = 7;
@@ -39,6 +42,9 @@ void LevelManager::SetupSingleton() {
 void LevelManager::Awake() {
   // #region Awake
   SetupSingleton();
+  fireBallSprite = new Sprite("sprites/FireBall.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+  ballSprite = new Sprite("sprites/Ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+
   // #endregion
 }
 
@@ -190,8 +196,12 @@ void LevelManager::SpawnRow() {
 Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Vector2 &dir) {
   // #region SpawnBall
   GameObject &ballGO = gameObject->scene->rootGameObject->CreateChild("Ball");
-  ballGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f));
+
+
+
   CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
+
+
 
   RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
   ballRB.collisionMode = CollisionMode::Continuous;
@@ -200,9 +210,17 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
   ball->ballType = type;
 
   ballGO.transform->position = Vector3(pos);
-  if (type != BallType::Fire) {
+
+
+  if (type == BallType::Normal) {
     ball->direction = dir;
     balls.push_back(&ballGO);
+    ballGO.AddComponent<Renderer>(ballSprite, Vector2(0.5f, 0.5f));
+  } else {
+    ballGO.AddComponent<Renderer>(fireBallSprite, Vector2(0.7f, 0.7f));
+    ballCollider.SetRadius(0.7f);
+    ballCollider.isTrigger = true;
+    ball->speed = 25;
   }
   return ball;
   // #endregion
@@ -250,10 +268,9 @@ void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   }
 
   recrutGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f), color);
-  recrutGO.AddComponent<CircleCollider>(0.25f);
-
+  CircleCollider &col = recrutGO.AddComponent<CircleCollider>(0.25f);
+  col.isTrigger = true;
   RigidBody &recrutRB = recrutGO.AddComponent<RigidBody>();
-  recrutRB.collisionMode = CollisionMode::Continuous;
 
   Recrut &recrut = recrutGO.AddComponent<Recrut>();
   recrut.recrutType = type;
@@ -263,10 +280,14 @@ void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
 
 void LevelManager::FireFireBall() {
   // #region FireFireBall
+
+
   Vector2 pos = Vector2(PlayerController::Singleton->gameObject->transform->position);
   Ball *left = SpawnBall(BallType::Fire, pos);
   Ball *center = SpawnBall(BallType::Fire, pos);
   Ball *right = SpawnBall(BallType::Fire, pos);
+
+
 
   const std::function<Vector2(Vector2, float)> rotate = [](Vector2 base, float angle) {
     const float rad = angle * DEG2RAD;

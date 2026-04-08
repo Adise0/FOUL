@@ -15,8 +15,6 @@ public:
 public:
   BallType ballType = BallType::Normal;
   float waitTime = 0;
-
-private:
   float speed = 15;
   // #endregion
 

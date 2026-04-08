@@ -2,8 +2,6 @@
 
 #include "Recrut.h"
 #include <Crow2D/Crow2D.h>
-#include <Crow2D/GameObject.h>
-#include <Crow2D/dataObjects/Vectors.h>
 #include <unordered_map>
 #include <vector>
 
@@ -36,6 +34,10 @@ private:
   int nextPlatform = 0;
   std::vector<Crow2D::GameObject *> balls;
   std::unordered_map<Crow2D::GameObject *, short> walls;
+
+  Crow2D::Types::Sprite *ballSprite;
+  Crow2D::Types::Sprite *fireBallSprite;
+
 
 public:
   // #endregion

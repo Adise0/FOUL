@@ -161,4 +161,5 @@ void PlayerController::OnColliderEnter(const Collider &other) {
   BounceNormalBall(ball);
   // #endregion
 }
+
 } // namespace FOUL::Behaviours
