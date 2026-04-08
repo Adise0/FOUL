@@ -179,7 +179,7 @@ void LevelManager::CheckBalls() {
   // #region CheckBall
   bool ballFell = false;
   for (GameObject *ball : balls) {
-    if (ball->transform->position.get().y > Data::PaddleY - 1) continue;
+    if (ball->transform->position.get().y > Data::PaddleY - 4) continue;
     ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
     Destroy(*ball);
     ballFell = true;

@@ -38,7 +38,7 @@ void PlayerController::Awake() {
   Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
   collider->isTrigger = true;
-  collider->drawGizmos = true;
+  collider->drawGizmos = false;
 }
 
 void PlayerController::Start() { UpdatePlayers(); }
@@ -157,7 +157,6 @@ void PlayerController::OnColliderEnter(const Collider &other) {
   // #region OnTriggerEnter
   Ball *ball = other.gameObject->GetComponent<Ball>();
   if (ball) BounceNormalBall(ball);
-
   // #endregion
 }
 } // namespace FOUL::Behaviours
