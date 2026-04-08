@@ -2,6 +2,7 @@
 
 #include "Recrut.h"
 #include <Crow2D/Crow2D.h>
+#include <cmath>
 #include <unordered_map>
 #include <vector>
 
@@ -15,22 +16,22 @@ class LevelManager : public Crow2D::Components::Behaviour {
   // #region Data
 public:
   static LevelManager *Singleton;
-  static float levelSpeed;
   static std::unordered_map<Crow2D::GameObject *, PlatformType> platforms;
   static int points;
 
 private:
   static constexpr short MinPlatformsPerRow = 2;
   static constexpr short MaxPlatformsPerRow = 6;
-  static constexpr float SpawnY = 9;
+  static constexpr float SpawnY = 10.5f;
   static constexpr float PlatformWidth = 4;
 
 public:
   bool gameOver = false;
 
 private:
-  float currentWaitTime = levelSpeed;
-  float currentTimer = currentWaitTime;
+  float currentWaitTime;
+  float platformSpeed;
+  float currentTimer;
   int nextPlatform = 0;
   std::vector<Crow2D::GameObject *> balls;
   std::unordered_map<Crow2D::GameObject *, short> walls;
@@ -66,6 +67,7 @@ private:
   void CheckBalls();
   void SetupSingleton();
   void SpawnRow();
+  void MovePlatforms();
 
   // #endregion
 };

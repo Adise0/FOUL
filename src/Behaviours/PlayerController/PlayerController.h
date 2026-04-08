@@ -15,10 +15,10 @@ class PlayerController : public Crow2D::Components::Behaviour {
 public:
   static PlayerController *Singleton;
 
+  short playerCount = 3;
 
 private:
   Crow2D::GameObject *barrier = nullptr;
-  short playerCount = 3;
   short _playerCount = 0;
   float speed = 12;
   std::vector<Crow2D::GameObject *> players;

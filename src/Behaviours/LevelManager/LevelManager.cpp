@@ -21,10 +21,16 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
+static const int weights[] = {
+    65, // Normal
+    7,  // Player
+    10, // Ball
+    3,  // FireBall
+    15, //Wall
+};
 
 
 LevelManager *LevelManager::Singleton = nullptr;
-float LevelManager::levelSpeed = 7;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
 
@@ -44,29 +50,27 @@ void LevelManager::Awake() {
   SetupSingleton();
   fireBallSprite = new Sprite("sprites/FireBall.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
   ballSprite = new Sprite("sprites/Ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
-
   // #endregion
 }
 
 void LevelManager::Start() {
+  // #region Start
   gameOver = false;
+  Reset();
   SpawnBall(BallType::Normal, Vector2::Zero);
+  // #endregion
 }
 
 void LevelManager::Update() {
   // #region Update
   if (gameOver) return;
   CheckBalls();
+  MovePlatforms();
 
   currentTimer += Time::deltaTime;
   if (currentTimer < currentWaitTime) return;
 
-  for (auto &[platform, _] : platforms) {
-    platform->transform->position += Vector3(0, -2, 0);
-    if (platform->transform->position.get().y <= Data::PaddleY) {
-      gameOver = true;
-    }
-  }
+
   currentTimer = 0;
 
   SpawnRow();
@@ -75,9 +79,9 @@ void LevelManager::Update() {
 
 void LevelManager::Reset() {
   // #region Reset
-  levelSpeed = 7;
-  currentWaitTime = levelSpeed;
-  currentTimer = currentWaitTime;
+  currentWaitTime = 7;
+  platformSpeed = 0.3f;
+  currentTimer = INFINITY;
   // #endregion
 }
 
@@ -149,7 +153,6 @@ void LevelManager::SpawnRow() {
 
   for (short i = 0; i <= nOfPlatforms; i++) {
 
-    int platformType = std::rand() % (int)PlatformType::Count;
     nextPlatform++;
     GameObject &platform =
         gameObject->CreateChild(("Platform_" + std::to_string(nextPlatform)).c_str());
@@ -166,7 +169,25 @@ void LevelManager::SpawnRow() {
                 SpawnY, 0);
     platform.transform->position = pos;
 
+    int total = 0;
+    for (int w : weights)
+      total += w;
+
+    int roll = std::rand() % total;
+
+    int cumulative = 0;
+    int platformType = 0;
+    for (int j = 0; j < (int)PlatformType::Count; j++) {
+      cumulative += weights[j];
+      if (roll < cumulative) {
+        platformType = j;
+        break;
+      }
+    }
+
     PlatformType type = (PlatformType)platformType;
+    if (type == PlatformType::Player && PlayerController::Singleton->playerCount >= 6)
+      type = PlatformType::Normal;
     switch (type) {
     case PlatformType::Ball:
       renderer.SetColor(SDL_Color{255, 0, 255, 255});
@@ -277,7 +298,6 @@ void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   // #endregion
 }
 
-
 void LevelManager::FireFireBall() {
   // #region FireFireBall
 
@@ -300,6 +320,15 @@ void LevelManager::FireFireBall() {
   left->direction = rotate(forward, -45);
   center->direction = forward;
   right->direction = rotate(forward, 45);
+  // #endregion
+}
+
+void LevelManager::MovePlatforms() {
+  // #region MovePlatforms
+  for (auto &[platform, _] : platforms) {
+    platform->transform->position += Vector3::Down * platformSpeed * Time::deltaTime;
+    if (platform->transform->position.get().y <= Data::PaddleY) gameOver = true;
+  }
   // #endregion
 }
 
