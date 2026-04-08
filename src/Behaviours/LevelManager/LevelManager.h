@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ball.h"
+#include "Recrut.h"
 #include <Crow2D/Crow2D.h>
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
@@ -9,7 +9,9 @@
 
 namespace FOUL::Behaviours {
 
-enum class PlatformType { Normal, Goal, Player, Ball, FireBall, Count };
+class Ball;
+
+enum class PlatformType { Normal, Player, Ball, FireBall, Wall, Count };
 enum class BallType { Normal, Fire };
 class LevelManager : public Crow2D::Components::Behaviour {
   // #region Data
@@ -33,6 +35,7 @@ private:
   float currentTimer = currentWaitTime;
   int nextPlatform = 0;
   std::vector<Crow2D::GameObject *> balls;
+  std::unordered_map<Crow2D::GameObject *, short> walls;
 
 public:
   // #endregion
@@ -51,14 +54,16 @@ public:
                   const Crow2D::Types::Vector2 &dir = Crow2D::Types::Vector2::Down);
   void RemoveBall(Crow2D::GameObject *ball);
 
-  void HitPlatform(Crow2D::GameObject *platform);
+  void HitPlatform(Crow2D::GameObject *platform, Ball *ball);
+  void FireFireBall();
 
 private:
   void DestroyPlatform(Crow2D::GameObject *platform);
-  void SpawnRecrut(const Crow2D::Types::Vector2 &pos);
+  void SpawnRecrut(const Crow2D::Types::Vector2 &pos, const RecrutType &type);
+  void SpawnFireBall(const Crow2D::Types::Vector2 &pos);
   void CheckBalls();
   void SetupSingleton();
-  void SpawnNormalRow();
+  void SpawnRow();
 
   // #endregion
 };

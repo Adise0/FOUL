@@ -31,9 +31,16 @@ void Recrut::OnTriggerEnter(const Collider &other) {
   // #region OnTriggerEnter
   GameObject *go = other.gameObject;
 
-  if (go->name.get() != "PlayerController") return;
+  if (go->name != "PlayerController") return;
 
-  PlayerController::Singleton->AddPlayer();
+  switch (recrutType) {
+  case RecrutType::Player:
+    PlayerController::Singleton->AddPlayer();
+    break;
+  case RecrutType::FireBall:
+    LevelManager::Singleton->FireFireBall();
+    break;
+  }
   Destroy(gameObject);
   // #endregion
 }

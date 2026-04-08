@@ -37,7 +37,9 @@ void Ball::Move() {
 
   if ((pos.x <= -Data::XLimit && direction.x < 0) || (pos.x >= Data::XLimit && direction.x > 0))
     direction.x = -direction.x;
-  if (pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
+  if (ballType != BallType::Fire && pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
+
+  if (ballType == BallType::Fire && pos.y > 10) Destroy(gameObject);
   // #endregion
 }
 
@@ -47,7 +49,10 @@ void Ball::OnTriggerEnter(const Collider &other) {
 
   if (!go->name.get().starts_with("Platform")) return;
 
-
+  if (ballType == BallType::Fire) {
+    LevelManager::Singleton->HitPlatform(go, this);
+    return;
+  }
   BoxCollider *box = go->GetComponent<BoxCollider>();
   float angle = go->transform->rotation * (3.14159f / 180.0f);
   float cosine = std::cos(-angle), sine = std::sin(-angle);
@@ -72,8 +77,7 @@ void Ball::OnTriggerEnter(const Collider &other) {
   direction = direction - normal * (2.0f * direction.Dot(normal));
 
 
-  LevelManager::Singleton->HitPlatform(go);
-
+  LevelManager::Singleton->HitPlatform(go, this);
   // #endregion
 }
 

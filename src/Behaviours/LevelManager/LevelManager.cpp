@@ -6,7 +6,9 @@
 #include <Crow2D/GameObject.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_pixels.h>
+#include <cmath>
 #include <cstdlib>
+#include <functional>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -16,11 +18,12 @@ using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 
+static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
+
 LevelManager *LevelManager::Singleton = nullptr;
 float LevelManager::levelSpeed = 7;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
-
 
 
 void LevelManager::SetupSingleton() {
@@ -60,7 +63,7 @@ void LevelManager::Update() {
   }
   currentTimer = 0;
 
-  SpawnNormalRow();
+  SpawnRow();
   // #endregion
 }
 
@@ -72,23 +75,46 @@ void LevelManager::Reset() {
   // #endregion
 }
 
-void LevelManager::HitPlatform(GameObject *platform) {
+void LevelManager::HitPlatform(GameObject *platform, Ball *ball) {
   // #region HitPlatform
   if (!platform) return;
 
   auto it = platforms.find(platform);
   if (it == platforms.end()) return;
 
+  bool preventDestroy = false;
   switch (it->second) {
   case PlatformType::Ball:
     SpawnBall(BallType::Normal, (Vector2)platform->transform->position);
     break;
 
   case PlatformType::Player:
-    SpawnRecrut((Vector2)platform->transform->position);
+    SpawnRecrut((Vector2)platform->transform->position, RecrutType::Player);
+    break;
+
+  case PlatformType::Wall:
+    {
+      auto wallIt = walls.find(platform);
+      if (wallIt != walls.end()) {
+        wallIt->second--;
+        if (wallIt->second > 0 && ball->ballType != BallType::Fire) {
+          preventDestroy = true;
+          break;
+        }
+        // Change sprite
+      }
+      break;
+    }
+
+  case PlatformType::FireBall:
+    SpawnRecrut((Vector2)platform->transform->position, RecrutType::FireBall);
+    break;
+
+  default:
     break;
   }
 
+  if (preventDestroy) return;
   DestroyPlatform(platform);
   // #endregion
 }
@@ -100,14 +126,16 @@ void LevelManager::DestroyPlatform(GameObject *platform) {
   auto it = platforms.find(platform);
   if (it == platforms.end()) return;
 
+  auto wallIt = walls.find(platform);
+  if (wallIt != walls.end()) walls.erase(wallIt);
 
   Destroy(*platform);
   platforms.erase(it);
   // #endregion
 }
 
-void LevelManager::SpawnNormalRow() {
-  // #region SpawnNormalRow
+void LevelManager::SpawnRow() {
+  // #region SpawnRow
   const int nOfPlatforms =
       MinPlatformsPerRow + std::rand() % (MaxPlatformsPerRow - MinPlatformsPerRow);
 
@@ -140,6 +168,18 @@ void LevelManager::SpawnNormalRow() {
     case PlatformType::Player:
       renderer.SetColor(SDL_Color{0, 0, 255, 255});
       break;
+
+    case PlatformType::Wall:
+      renderer.SetColor(SDL_Color{255, 0, 0, 255});
+      walls[&platform] = 3;
+      break;
+
+    case PlatformType::FireBall:
+      renderer.SetColor(SDL_Color{255, 255, 0, 255});
+      break;
+
+    default:
+      break;
     }
 
     platforms[&platform] = type;
@@ -156,21 +196,14 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
   RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
   ballRB.collisionMode = CollisionMode::Continuous;
 
-  Ball *ball;
-  switch (type) {
-  case BallType::Normal:
-    ball = &ballGO.AddComponent<Ball>();
-    break;
-  // case BallType::Fire:
-  //   // ballGO.AddComponent<FireBall>();
-  //   break;
-  default:
-    throw std::runtime_error("Unknown ball type " + std::to_string((int)type));
-  }
+  Ball *ball = &ballGO.AddComponent<Ball>();
+  ball->ballType = type;
 
   ballGO.transform->position = Vector3(pos);
-  ball->direction = dir;
-  balls.push_back(&ballGO);
+  if (type != BallType::Fire) {
+    ball->direction = dir;
+    balls.push_back(&ballGO);
+  }
   return ball;
   // #endregion
 }
@@ -198,20 +231,55 @@ void LevelManager::CheckBalls() {
   // #endregion
 }
 
-void LevelManager::SpawnRecrut(const Vector2 &pos) {
+void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   // #region SpawnRecrut
-  GameObject &recrutGO = gameObject->scene->rootGameObject->CreateChild("Ball");
+  GameObject &recrutGO = gameObject->scene->rootGameObject->CreateChild("Recrut");
   recrutGO.transform->position = Vector3(pos);
-  recrutGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f),
-                                  SDL_Color{0, 0, 255, 255});
+
+  SDL_Color color;
+  switch (type) {
+  case RecrutType::Player:
+    color = {0, 0, 255, 255};
+    break;
+  case RecrutType::FireBall:
+    color = {255, 255, 0, 255};
+    break;
+
+  default:
+    throw std::runtime_error("Unknown recrut type");
+  }
+
+  recrutGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f), color);
   recrutGO.AddComponent<CircleCollider>(0.25f);
 
   RigidBody &recrutRB = recrutGO.AddComponent<RigidBody>();
   recrutRB.collisionMode = CollisionMode::Continuous;
 
-  recrutGO.AddComponent<Recrut>();
+  Recrut &recrut = recrutGO.AddComponent<Recrut>();
+  recrut.recrutType = type;
   // #endregion
 }
 
+
+void LevelManager::FireFireBall() {
+  // #region FireFireBall
+  Vector2 pos = Vector2(PlayerController::Singleton->gameObject->transform->position);
+  Ball *left = SpawnBall(BallType::Fire, pos);
+  Ball *center = SpawnBall(BallType::Fire, pos);
+  Ball *right = SpawnBall(BallType::Fire, pos);
+
+  const std::function<Vector2(Vector2, float)> rotate = [](Vector2 base, float angle) {
+    const float rad = angle * DEG2RAD;
+    return Vector2(base.x * std::cos(rad) + base.y * std::sin(rad),
+                   -base.x * std::sin(rad) + base.y * std::cos(rad));
+  };
+
+  Vector2 forward = PlayerController::Singleton->gameObject->transform->forward;
+
+  left->direction = rotate(forward, -45);
+  center->direction = forward;
+  right->direction = rotate(forward, 45);
+  // #endregion
+}
 
 } // namespace FOUL::Behaviours

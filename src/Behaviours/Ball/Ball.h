@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LevelManager.h"
 #include <Crow2D/Crow2D.h>
 #include <vector>
 
@@ -12,6 +13,7 @@ public:
   Crow2D::Components::Renderer *renderer;
 
 public:
+  BallType ballType = BallType::Normal;
   float waitTime = 0;
 
 private:

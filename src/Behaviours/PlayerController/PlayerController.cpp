@@ -156,7 +156,9 @@ void PlayerController::BounceNormalBall(Ball *ball) const {
 void PlayerController::OnColliderEnter(const Collider &other) {
   // #region OnTriggerEnter
   Ball *ball = other.gameObject->GetComponent<Ball>();
-  if (ball) BounceNormalBall(ball);
+  if (!ball || ball->ballType != BallType::Normal) return;
+
+  BounceNormalBall(ball);
   // #endregion
 }
 } // namespace FOUL::Behaviours

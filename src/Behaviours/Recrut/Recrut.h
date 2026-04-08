@@ -5,10 +5,13 @@
 
 namespace FOUL::Behaviours {
 
+enum class RecrutType { Player, FireBall };
+
 class Recrut : public Crow2D::Components::Behaviour {
   // #region Data
 public:
-public:
+  RecrutType recrutType;
+
 private:
   float speed = 10;
   // #endregion
