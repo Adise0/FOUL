@@ -38,6 +38,10 @@ private:
 
   Crow2D::Types::Sprite *ballSprite;
   Crow2D::Types::Sprite *fireBallSprite;
+  std::vector<Crow2D::Types::Sprite *> wallSprites;
+  Crow2D::Types::Sprite *platformSprite;
+  Crow2D::Types::Sprite *ballPlatformSprite;
+  Crow2D::Types::Sprite *playerPlatformSprite;
   // #endregion
 
 
