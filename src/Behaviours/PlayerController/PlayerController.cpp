@@ -62,7 +62,7 @@ void PlayerController::Move() {
   if (InputManager::GetKey(InputManager::GetMouseButtonName(SDL_BUTTON_LEFT)).isPressed)
     deg -= 90 * Time::deltaTime;
 
-  deg = std::clamp(deg, -80.0f, 80.0f);
+  deg = std::clamp(deg, -45.0f, 45.0f);
   transform->rotation = deg;
 
   Vector2 delta = dir * speed * Time::deltaTime;

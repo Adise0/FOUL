@@ -8,6 +8,7 @@
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <functional>
@@ -316,10 +317,9 @@ void LevelManager::FireFireBall() {
   };
 
   Vector2 forward = PlayerController::Singleton->gameObject->transform->forward;
-
-  left->direction = rotate(forward, -45);
+  left->direction = rotate(forward, -30);
   center->direction = forward;
-  right->direction = rotate(forward, 45);
+  right->direction = rotate(forward, 30);
   // #endregion
 }
 
