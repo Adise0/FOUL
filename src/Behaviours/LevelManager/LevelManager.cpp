@@ -55,13 +55,20 @@ void LevelManager::Awake() {
   ballSprite = new Sprite("sprites/Ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
 
   for (int i = 0; i < 3; i++) {
-    wallSprites.push_back(new Sprite(("sprites/Wall_" + std::to_string(i) + ".png").c_str(),
-                                     SDL_ScaleMode::SDL_SCALEMODE_PIXELART));
+    wallSprites.push_back(
+        new Sprite(("sprites/platforms/wall_" + std::to_string(i) + ".png").c_str(),
+                   SDL_ScaleMode::SDL_SCALEMODE_PIXELART));
   }
 
-  platformSprite = new Sprite("sprites/Wall_0.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
-  ballPlatformSprite = new Sprite("sprites/Wall_0.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
-  playerPlatformSprite = new Sprite("sprites/Wall_0.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+  platformSprite =
+      new Sprite("sprites/platforms/normal.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+  ballPlatformSprite =
+      new Sprite("sprites/platforms/ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+  fireballPlatformSprite =
+      new Sprite("sprites/platforms/fire.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+  playerPlatformSprite =
+      new Sprite("sprites/platforms/player.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+
   // #endregion
 }
 
@@ -121,7 +128,7 @@ void LevelManager::HitPlatform(GameObject *platform, Ball *ball) {
         wallIt->second++;
         if (wallIt->second < 3 && ball->ballType != BallType::Fire) {
           wallIt->first->GetComponent<Renderer>()->SetSprite(wallSprites[wallIt->second]);
-          printf("Setting wall spr to %d\n", wallIt->second);
+
           preventDestroy = true;
         }
       }
@@ -198,27 +205,32 @@ void LevelManager::SpawnRow() {
     PlatformType type = (PlatformType)platformType;
     if (type == PlatformType::Player && PlayerController::Singleton->playerCount >= 6)
       type = PlatformType::Normal;
+
+    Sprite *sprite;
+
     switch (type) {
     case PlatformType::Ball:
-      // renderer.SetColor(SDL_Color{255, 0, 255, 255});
+      sprite = ballPlatformSprite;
       break;
     case PlatformType::Player:
-      // renderer.SetColor(SDL_Color{0, 0, 255, 255});
+      sprite = playerPlatformSprite;
       break;
 
     case PlatformType::Wall:
-      platform.AddComponent<Renderer>(wallSprites[0], Vector2(PlatformWidth, 1));
+      sprite = wallSprites[0];
       walls[&platform] = 0;
       break;
 
     case PlatformType::FireBall:
-      // renderer.SetColor(SDL_Color{255, 255, 0, 255});
+      sprite = fireballPlatformSprite;
       break;
 
     default:
+      sprite = platformSprite;
       break;
     }
 
+    platform.AddComponent<Renderer>(sprite, Vector2(PlatformWidth, 1));
     platforms[&platform] = type;
   }
   // #endregion
@@ -356,6 +368,7 @@ void LevelManager::OnDestroy() {
   delete platformSprite;
   delete ballPlatformSprite;
   delete playerPlatformSprite;
+  delete fireballPlatformSprite;
 }
 
 } // namespace FOUL::Behaviours
