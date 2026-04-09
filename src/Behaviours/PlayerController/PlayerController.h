@@ -14,7 +14,7 @@ class PlayerController : public Crow2D::Components::Behaviour {
   // #region Data
 public:
   static PlayerController *Singleton;
-
+  std::vector<Crow2D::Types::Sprite *> playerSprites;
   short playerCount = 3;
 
 private:
@@ -23,12 +23,15 @@ private:
   float speed = 12;
   std::vector<Crow2D::GameObject *> players;
   Crow2D::Components::BoxCollider *collider = nullptr;
+  const Crow2D::Types::Sprite *_recturSpr = nullptr;
   // #endregion
+
 
   // #region Crow2D
   void Awake() override;
   void Start() override;
   void Update() override;
+  void OnDestroy() override;
   void OnColliderEnter(const Crow2D::Components::Collider &other) override;
   // #endregion
 
@@ -39,10 +42,11 @@ private:
   void UpdatePlayers();
 
   void BounceNormalBall(Ball *ball) const;
+  void InitializeSprites();
 
 public:
   void RemovePlayer();
-  void AddPlayer();
+  void AddPlayer(Crow2D::GameObject *recrut);
   // #endregion
 };
 } // namespace FOUL::Behaviours

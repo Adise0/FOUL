@@ -36,6 +36,7 @@ std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
 
 
+
 void LevelManager::SetupSingleton() {
   // #region SetupSingleton
   if (Singleton != nullptr && Singleton != this) {
@@ -276,20 +277,25 @@ void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   GameObject &recrutGO = gameObject->scene->rootGameObject->CreateChild("Recrut");
   recrutGO.transform->position = Vector3(pos);
 
-  SDL_Color color;
   switch (type) {
   case RecrutType::Player:
-    color = {0, 0, 255, 255};
-    break;
+    {
+      std::vector<Sprite *> &sprites = PlayerController::Singleton->playerSprites;
+      short sprIndex = std::rand() % sprites.size();
+
+      recrutGO.AddComponent<Renderer>(sprites[sprIndex],
+                                      Vector2(Data::xPerPlayer - 0.2f, Data::xPerPlayer));
+      recrutGO.transform->Rotate(90);
+      break;
+    }
   case RecrutType::FireBall:
-    color = {255, 255, 0, 255};
+    recrutGO.AddComponent<Renderer>(fireBallSprite, Vector2(0.5f, 0.5f));
     break;
 
   default:
     throw std::runtime_error("Unknown recrut type");
   }
 
-  recrutGO.AddComponent<Renderer>(Primitives::Circle, Vector2(0.5f, 0.5f), color);
   CircleCollider &col = recrutGO.AddComponent<CircleCollider>(0.25f);
   col.isTrigger = true;
   RigidBody &recrutRB = recrutGO.AddComponent<RigidBody>();
@@ -330,6 +336,11 @@ void LevelManager::MovePlatforms() {
     if (platform->transform->position.get().y <= Data::PaddleY) gameOver = true;
   }
   // #endregion
+}
+
+void LevelManager::OnDestroy() {
+  delete fireBallSprite;
+  delete ballSprite;
 }
 
 } // namespace FOUL::Behaviours

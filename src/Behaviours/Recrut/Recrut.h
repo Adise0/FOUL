@@ -13,7 +13,7 @@ public:
   RecrutType recrutType;
 
 private:
-  float speed = 10;
+  float speed = 6;
   // #endregion
 
   // #region Crow2D

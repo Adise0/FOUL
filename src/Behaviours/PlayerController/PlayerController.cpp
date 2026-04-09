@@ -3,6 +3,7 @@
 #include "LevelManager.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/InputManager.h>
+#include <Crow2D/dataObjects/Sprite.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_mouse.h>
 #include <algorithm>
@@ -20,6 +21,8 @@ using namespace Crow2D::Inputs;
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 
 PlayerController *PlayerController::Singleton = nullptr;
+
+
 
 void PlayerController::SetupSingleton() {
   // #region SetupSingleton
@@ -39,6 +42,22 @@ void PlayerController::Awake() {
   collider = &gameObject->AddComponent<BoxCollider>(colliderSize);
   collider->isTrigger = true;
   collider->drawGizmos = false;
+  InitializeSprites();
+}
+
+void PlayerController::InitializeSprites() {
+  // #region InitializeSprites
+  const Vector2 cells(8, 6);
+  const Vector2 spriteSize(21, 31);
+
+  for (int x = 0; x < cells.x; x++) {
+    for (int y = 0; y < cells.y; y++) {
+      Sprite *spr = new Sprite("sprites/Characters.png",
+                               {x * spriteSize.x, y * spriteSize.y, spriteSize.x, spriteSize.y});
+      playerSprites.push_back(spr);
+    }
+  }
+  // #endregion
 }
 
 void PlayerController::Start() { UpdatePlayers(); }
@@ -79,28 +98,42 @@ void PlayerController::Move() {
 void PlayerController::UpdatePlayers() {
   // #region UpdatePlayers
   if (_playerCount == playerCount) return;
+
+  int playerDelta = playerCount - _playerCount;
   _playerCount = playerCount;
 
-  for (GameObject *player : players) {
-    Destroy(*player);
-  }
-  players.clear();
+  if (playerDelta > 0) {
+    for (int i = players.size(); i < playerCount; i++) {
+      GameObject &playerGO = gameObject->CreateChild(("Player_" + std::to_string(i)).c_str());
+      playerGO.transform->Rotate(-90);
+      int sprIndex = std::rand() % playerSprites.size();
 
-  for (int i = 0; i < playerCount; i++) {
+      const Sprite *spr = _recturSpr;
+      if (!spr) {
+        short sprIndex = std::rand() % playerSprites.size();
+        spr = playerSprites[sprIndex];
+      }
+
+      playerGO.AddComponent<Renderer>(spr, Vector2(Data::xPerPlayer - 0.2f, Data::xPerPlayer));
+      _recturSpr = nullptr;
+      players.push_back(&playerGO);
+    }
+  } else {
+    for (int i = players.size() - 1; i >= playerCount; i--) {
+      Destroy(*players[i]);
+      players.pop_back();
+    }
+  }
+
+
+  for (int i = 0; i < players.size(); i++) {
     Vector3 playerPos(
         (float)i * Data::xPerPlayer - ((float)(playerCount - 1) * Data::xPerPlayer) / 2, 0, 0);
-    GameObject &playerGO = gameObject->CreateChild(("Player_" + std::to_string(i)).c_str());
-    Renderer &playerRnederer = playerGO.AddComponent<Renderer>(
-        Primitives::Circle, Vector2(Data::xPerPlayer - 0.1f, Data::xPerPlayer));
-
-    playerGO.transform->localPosition = playerPos;
-    players.push_back(&playerGO);
+    players[i]->transform->localPosition = playerPos;
   }
 
   Vector2 colliderSize(Data::xPerPlayer * (playerCount + 1), Data::xPerPlayer);
   collider->SetSize(colliderSize);
-
-
   // #endregion
 }
 
@@ -113,9 +146,10 @@ void PlayerController::RemovePlayer() {
   LevelManager::Singleton->gameOver = true;
   // #endregion
 }
-void PlayerController::AddPlayer() {
+void PlayerController::AddPlayer(GameObject *recrut) {
   // #region AddPlayer
   playerCount++;
+  _recturSpr = &recrut->GetComponent<Renderer>()->sprite.get();
   UpdatePlayers();
   // #endregion
 }
@@ -160,6 +194,12 @@ void PlayerController::OnColliderEnter(const Collider &other) {
 
   BounceNormalBall(ball);
   // #endregion
+}
+
+void PlayerController::OnDestroy() {
+  for (Sprite *spr : playerSprites) {
+    delete spr;
+  }
 }
 
 } // namespace FOUL::Behaviours

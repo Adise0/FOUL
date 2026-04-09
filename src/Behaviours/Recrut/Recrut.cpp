@@ -24,6 +24,9 @@ void Recrut::Update() {
 void Recrut::Move() {
   // #region Move
   transform->Translate(Vector2::Down * speed * Time::deltaTime);
+  if (recrutType != RecrutType::Player) return;
+  // TODO: Add wobble anim here
+
   // #endregion
 }
 
@@ -35,7 +38,7 @@ void Recrut::OnTriggerEnter(const Collider &other) {
 
   switch (recrutType) {
   case RecrutType::Player:
-    PlayerController::Singleton->AddPlayer();
+    PlayerController::Singleton->AddPlayer(gameObject);
     break;
   case RecrutType::FireBall:
     LevelManager::Singleton->FireFireBall();

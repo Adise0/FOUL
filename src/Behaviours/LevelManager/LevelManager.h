@@ -38,16 +38,15 @@ private:
 
   Crow2D::Types::Sprite *ballSprite;
   Crow2D::Types::Sprite *fireBallSprite;
-
-
-public:
   // #endregion
+
 
   // #region Crow2D
 private:
   void Awake() override;
   void Start() override;
   void Update() override;
+  void OnDestroy() override;
   // #endregion
 
   // #region Methods
