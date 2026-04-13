@@ -1,0 +1,11 @@
+.root {
+  height: 100vh;
+  width: 100vw;
+
+  display: flex;
+  background-color: white;
+
+  /* background-image: url("../img/Background.png"); */
+}
+
+

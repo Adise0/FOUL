@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./resources",
+    "outDir": "./assets/ui/scripts",
     "rootDir": "./ts"
   },
   "include": ["ts/**/*.ts"]

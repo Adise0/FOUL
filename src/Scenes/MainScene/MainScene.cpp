@@ -5,13 +5,7 @@
 #include "Data.h"
 #include "LevelManager.h"
 #include "PlayerController.h"
-#include <Crow2D/Crow2D.h>
-#include <Crow2D/GameObject.h>
-#include <Crow2D/components/Renderer.h>
-#include <Crow2D/components/RigidBody.h>
-#include <Crow2D/components/colliders/CircleCollider.h>
-#include <Crow2D/dataObjects/Sprite.h>
-#include <Crow2D/dataObjects/Vectors.h>
+
 
 namespace FOUL {
 

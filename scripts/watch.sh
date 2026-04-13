@@ -11,6 +11,6 @@ while getopts "n" opt; do
 done
 shift $((OPTIND - 1))
 
-watchexec --shell=powershell -w src -w assets -e cpp,h,html,js -r --stop-signal SIGTERM \
+watchexec --shell=powershell -w src -w assets -e cpp,h,html,js,css -r --stop-signal SIGTERM \
   -E RUN_AFTER="$run_after" \
   -- bash ./scripts/dev.sh
