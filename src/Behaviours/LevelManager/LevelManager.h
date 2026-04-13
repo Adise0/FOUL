@@ -2,6 +2,7 @@
 
 #include "Recrut.h"
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/properties/PrivateSetProperty.h>
 #include <cmath>
 #include <unordered_map>
 #include <vector>
@@ -18,6 +19,7 @@ public:
   static LevelManager *Singleton;
   static std::unordered_map<Crow2D::GameObject *, PlatformType> platforms;
   static int points;
+  static PRIVATE_SET_PROPERTY(LevelManager, bool, isRespawning);
 
 private:
   static constexpr short MinPlatformsPerRow = 2;
@@ -29,9 +31,11 @@ public:
   bool gameOver = false;
 
 private:
-  float currentWaitTime;
-  float platformSpeed;
-  float currentTimer;
+  float currentWaitTime = 0;
+  float platformSpeed = 0;
+  float currentTimer = 0;
+  float respawnTime = 3;
+  float respawnTimer = 0;
   int nextPlatform = 0;
   std::vector<Crow2D::GameObject *> balls;
   std::unordered_map<Crow2D::GameObject *, short> walls;

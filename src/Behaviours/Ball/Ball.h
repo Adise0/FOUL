@@ -14,7 +14,6 @@ public:
   Crow2D::Types::Vector2 direction = Crow2D::Types::Vector2::Down;
   Crow2D::Components::Renderer *renderer;
   BallType ballType = BallType::Normal;
-  float waitTime = 0;
   float speed = 15;
 
 private:

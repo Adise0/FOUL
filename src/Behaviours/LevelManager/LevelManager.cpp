@@ -6,6 +6,7 @@
 #include <Crow2D/GameObject.h>
 #include <Crow2D/components/colliders/CircleCollider.h>
 #include <Crow2D/dataObjects/Vectors.h>
+#include <Crow2D/properties/PrivateSetProperty.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
 #include <algorithm>
@@ -21,6 +22,7 @@ namespace FOUL::Behaviours {
 using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
+using namespace Crow2D::Utils;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 static const int weights[] = {
@@ -35,6 +37,7 @@ static const int weights[] = {
 LevelManager *LevelManager::Singleton = nullptr;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
 int LevelManager::points;
+PrivateSetProperty<LevelManager, bool> LevelManager::isRespawning;
 
 
 
@@ -50,6 +53,7 @@ void LevelManager::SetupSingleton() {
 
 void LevelManager::Awake() {
   // #region Awake
+  isRespawning.set(false);
   SetupSingleton();
   fireBallSprite = new Sprite("sprites/FireBall.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
   ballSprite = new Sprite("sprites/Ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
@@ -82,8 +86,20 @@ void LevelManager::Start() {
 void LevelManager::Update() {
   // #region Update
   if (gameOver) return;
+
+
+  if (isRespawning) {
+    respawnTimer += Time::deltaTime;
+    if (respawnTimer >= respawnTime) {
+      isRespawning.set(false);
+      respawnTimer = 0;
+    }
+    return;
+  }
+
   CheckBalls();
   MovePlatforms();
+
 
   currentTimer += Time::deltaTime;
   if (currentTimer < currentWaitTime) return;
@@ -283,11 +299,13 @@ void LevelManager::CheckBalls() {
     PlayerController::Singleton->RemovePlayer();
     if (gameOver) return;
     Ball *ball = SpawnBall(BallType::Normal, Vector2::Zero);
-    ball->waitTime = 1;
+    isRespawning.set(true);
     // TODO: wait a second
   }
   // #endregion
 }
+
+
 
 void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   // #region SpawnRecrut

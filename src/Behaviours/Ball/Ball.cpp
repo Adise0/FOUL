@@ -43,11 +43,7 @@ void Ball::Start() {
 void Ball::Update() {
   // #region Update
   if (LevelManager::Singleton->gameOver) return;
-
-  if (waitTime > 0) {
-    waitTime -= Time::deltaTime;
-    return;
-  } else if (waitTime != 0) waitTime = 0;
+  if (LevelManager::isRespawning) return;
   Move();
   // #endregion
 }
