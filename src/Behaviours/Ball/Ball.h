@@ -2,7 +2,8 @@
 
 #include "LevelManager.h"
 #include <Crow2D/Crow2D.h>
-#include <Crow2D/dataObjects/Sprite.h>
+#include <Crow2D/dataObjects/Vectors.h>
+#include <deque>
 #include <vector>
 
 namespace FOUL::Behaviours {
@@ -12,12 +13,17 @@ class Ball : public Crow2D::Components::Behaviour {
 public:
   Crow2D::Types::Vector2 direction = Crow2D::Types::Vector2::Down;
   Crow2D::Components::Renderer *renderer;
-
-public:
   BallType ballType = BallType::Normal;
-  Crow2D::Types::Sprite *trailSprite = nullptr;
   float waitTime = 0;
   float speed = 15;
+
+private:
+  static constexpr short TrailLength = 16;
+  std::deque<Crow2D::Types::Vector3> trailPositions;
+  std::deque<float> trailRotations;
+  Crow2D::Components::Renderer *trailRenderers[TrailLength]{};
+  Crow2D::Types::Vector3 _prevPos;
+  float _prevAngle = 0;
   // #endregion
 
   // #region Crow2D

@@ -3,7 +3,10 @@
 #include "LevelManager.h"
 #include "PlayerController.h"
 #include <Crow2D/GameObject.h>
+#include <Crow2D/components/Renderer.h>
+#include <Crow2D/dataObjects/Sprite.h>
 #include <Crow2D/dataObjects/Vectors.h>
+#include <cstdio>
 
 namespace FOUL::Behaviours {
 using namespace Crow2D;
@@ -11,19 +14,26 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
 
+constexpr float RAD2DEG = 180.0f / 3.14159265358979f;
+
 void Ball::Awake() {
   // #region Awake
   renderer = gameObject->GetComponent<Renderer>();
-  GameObject &trail = gameObject->CreateChild("Trail");
 
-  if (ballType == BallType::Normal) {
-    trailSprite = new Sprite("sprites/vfx/ball", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
-    trail.AddComponent<Renderer>(trailSprite, Vector2(0.5f, 2.08f));
-    trail.transform->localPosition -= 
+  const Vector2 segmentSize =
+      ballType == BallType::Normal ? Vector2(0.5f, 0.2f) : Vector2(0.7f, 0.2);
+  for (short i = 0; i < TrailLength; i++) {
+    GameObject &segmentGO = gameObject->CreateChild("TrailSegment");
+    Renderer &segmentRenderer = segmentGO.AddComponent<Renderer>(Primitives::Circle, segmentSize);
+    Uint8 alpha = (Uint8)(200 * (1.0f - (float)i / TrailLength));
+    segmentRenderer.SetColor({255, 255, 255, alpha});
+    printf("Set alpha to: %d\n", alpha);
+    trailRenderers[i] = &segmentRenderer;
+    trailPositions.push_back(Vector3::Zero);
+    trailRotations.push_back(0);
   }
   // #endregion
 }
-
 
 void Ball::Update() {
   // #region Update
@@ -47,6 +57,23 @@ void Ball::Move() {
   if (ballType != BallType::Fire && pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
 
   if (ballType == BallType::Fire && pos.y > 10) Destroy(gameObject);
+
+  if (Vector3::Distance(transform->position, _prevPos) < 0.1f) return;
+  _prevPos = transform->position;
+  _prevAngle = transform->rotation;
+
+  trailPositions.push_front(transform->position);
+  trailPositions.pop_back();
+
+  float angle = atan2f(direction.x, direction.y) * RAD2DEG;
+  trailRotations.push_front(angle);
+  trailRotations.pop_back();
+
+  for (short i = 0; i < TrailLength; i++) {
+    trailRenderers[i]->transform->position = trailPositions[i];
+    trailRenderers[i]->transform->rotation = trailRotations[i];
+  }
+
   // #endregion
 }
 
@@ -88,9 +115,6 @@ void Ball::OnTriggerEnter(const Collider &other) {
   // #endregion
 }
 
-void Ball::OnDestroy() {
-  if (!trailSprite) return;
-  delete trailSprite;
-}
+void Ball::OnDestroy() {}
 
 } // namespace FOUL::Behaviours
