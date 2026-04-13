@@ -22,7 +22,7 @@ void Ball::Start() {
       ballType == BallType::Normal ? Vector2(0.5f, 0.2f) : Vector2(0.7f, 0.2);
 
   const SDL_Color baseColor =
-      ballType == BallType::Normal ? SDL_Color{255, 255, 255, 255} : SDL_Color{255, 0, 0, 255};
+      ballType == BallType::Normal ? SDL_Color{255, 255, 255, 255} : SDL_Color{255, 160, 0, 255};
 
 
   for (short i = 0; i < TrailLength; i++) {
