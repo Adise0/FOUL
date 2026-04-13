@@ -42,6 +42,7 @@ void MainScene::LoadBackground() {
                                 SDL_Color{94, 159, 57, 255});
 
   global.AddComponent<LevelManager>();
+  global.transform->position -= Vector3(0, 0, 100);
   // #endregion
 }
 

@@ -24,11 +24,11 @@ using namespace Crow2D::Types;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 static const int weights[] = {
-    65, // Normal
-    7,  // Player
-    10, // Ball
-    3,  // FireBall
-    15, //Wall
+    65,  // Normal
+    7,   // Player
+    10,  // Ball
+    200, // FireBall
+    15,  //Wall
 };
 
 

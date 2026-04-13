@@ -28,7 +28,7 @@ private:
 
   // #region Crow2D
 private:
-  void Awake() override;
+  void Start() override;
   void Update() override;
   void OnDestroy() override;
   // #endregion

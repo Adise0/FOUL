@@ -2,10 +2,8 @@
 #include "Data.h"
 #include "LevelManager.h"
 #include "PlayerController.h"
-#include <Crow2D/GameObject.h>
-#include <Crow2D/components/Renderer.h>
-#include <Crow2D/dataObjects/Sprite.h>
 #include <Crow2D/dataObjects/Vectors.h>
+#include <SDL3/SDL_pixels.h>
 #include <cstdio>
 
 namespace FOUL::Behaviours {
@@ -16,22 +14,29 @@ using namespace Crow2D::Inputs;
 
 constexpr float RAD2DEG = 180.0f / 3.14159265358979f;
 
-void Ball::Awake() {
+void Ball::Start() {
   // #region Awake
-  renderer = gameObject->GetComponent<Renderer>();
+
 
   const Vector2 segmentSize =
       ballType == BallType::Normal ? Vector2(0.5f, 0.2f) : Vector2(0.7f, 0.2);
+
+  const SDL_Color baseColor =
+      ballType == BallType::Normal ? SDL_Color{255, 255, 255, 255} : SDL_Color{255, 0, 0, 255};
+
+
   for (short i = 0; i < TrailLength; i++) {
     GameObject &segmentGO = gameObject->CreateChild("TrailSegment");
+    segmentGO.transform->position += Vector3(0, 0, -1);
     Renderer &segmentRenderer = segmentGO.AddComponent<Renderer>(Primitives::Circle, segmentSize);
     Uint8 alpha = (Uint8)(200 * (1.0f - (float)i / TrailLength));
-    segmentRenderer.SetColor({255, 255, 255, alpha});
-    printf("Set alpha to: %d\n", alpha);
+    segmentRenderer.SetColor({baseColor.r, baseColor.g, baseColor.b, alpha});
     trailRenderers[i] = &segmentRenderer;
-    trailPositions.push_back(Vector3::Zero);
+    trailPositions.push_back(segmentGO.transform->position);
     trailRotations.push_back(0);
   }
+
+  renderer = gameObject->GetComponent<Renderer>();
   // #endregion
 }
 
@@ -62,7 +67,7 @@ void Ball::Move() {
   _prevPos = transform->position;
   _prevAngle = transform->rotation;
 
-  trailPositions.push_front(transform->position);
+  trailPositions.push_front(Vector3(pos, -1));
   trailPositions.pop_back();
 
   float angle = atan2f(direction.x, direction.y) * RAD2DEG;
