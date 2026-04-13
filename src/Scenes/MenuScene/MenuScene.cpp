@@ -1,6 +1,10 @@
 
 
 #include "MenuScene.h"
+#include "LevelManager.h"
+#include <Crow2D/Crow2dUtils.h>
+#include <Crow2D/dataObjects/Sprite.h>
+#include <cstdio>
 
 namespace FOUL {
 
@@ -16,8 +20,12 @@ MenuScene::MenuScene() : Scene("Menu Scene") {}
 void MenuScene::Load() { LoadUI(); }
 
 void MenuScene::LoadUI() {
+
   GameObject &uiHolderGO = rootGameObject->CreateChild("UI Holder");
-  UIRenderer &uiRenderer = uiHolderGO.AddComponent<UIRenderer>("index.html");
+  Camera &cam = uiHolderGO.AddComponent<Camera>();
+  UIRenderer &uiRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
+
+  uiHolderGO.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
 }
 } // namespace FOUL
 

@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "./assets/ui/scripts",
-    "rootDir": "./ts"
+    "rootDir": "./ts",
+    "types": ["crow2d-types"]
   },
   "include": ["ts/**/*.ts"]
 }
