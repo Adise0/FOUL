@@ -115,6 +115,9 @@ void PlayerController::UpdatePlayers() {
       }
 
       playerGO.AddComponent<Renderer>(spr, Vector2(Data::xPerPlayer - 0.2f, Data::xPerPlayer));
+      playerGO.AddComponent<Renderer>(Primitives::Circle,
+                                      Vector2(Data::xPerPlayer - 0.1f, Data::xPerPlayer),
+                                      SDL_Color{0, 0, 0, 75});
       _recturSpr = nullptr;
       players.push_back(&playerGO);
     }

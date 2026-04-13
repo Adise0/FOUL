@@ -14,6 +14,13 @@ using namespace Crow2D::Inputs;
 void Ball::Awake() {
   // #region Awake
   renderer = gameObject->GetComponent<Renderer>();
+  GameObject &trail = gameObject->CreateChild("Trail");
+
+  if (ballType == BallType::Normal) {
+    trailSprite = new Sprite("sprites/vfx/ball", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+    trail.AddComponent<Renderer>(trailSprite, Vector2(0.5f, 2.08f));
+    trail.transform->localPosition -= 
+  }
   // #endregion
 }
 
@@ -79,6 +86,11 @@ void Ball::OnTriggerEnter(const Collider &other) {
 
   LevelManager::Singleton->HitPlatform(go, this);
   // #endregion
+}
+
+void Ball::OnDestroy() {
+  if (!trailSprite) return;
+  delete trailSprite;
 }
 
 } // namespace FOUL::Behaviours

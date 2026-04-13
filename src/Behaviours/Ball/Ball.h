@@ -2,6 +2,7 @@
 
 #include "LevelManager.h"
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/dataObjects/Sprite.h>
 #include <vector>
 
 namespace FOUL::Behaviours {
@@ -14,6 +15,7 @@ public:
 
 public:
   BallType ballType = BallType::Normal;
+  Crow2D::Types::Sprite *trailSprite = nullptr;
   float waitTime = 0;
   float speed = 15;
   // #endregion
@@ -22,6 +24,7 @@ public:
 private:
   void Awake() override;
   void Update() override;
+  void OnDestroy() override;
   // #endregion
 
   // #region Methods

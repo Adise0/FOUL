@@ -37,8 +37,9 @@ void MainScene::LoadBackground() {
   Camera &cam = global.AddComponent<Camera>();
   cam.size = 20;
 
-  Sprite *bg = new Sprite("sprites/FieldBackground.png");
-  global.AddComponent<Renderer>(bg, WindowManager::resolution / cam.screenPpu);
+
+  global.AddComponent<Renderer>(Primitives::Square, WindowManager::resolution / cam.screenPpu,
+                                SDL_Color{94, 159, 57, 255});
 
   global.AddComponent<LevelManager>();
   // #endregion

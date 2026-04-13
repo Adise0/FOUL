@@ -68,7 +68,6 @@ void LevelManager::Awake() {
       new Sprite("sprites/platforms/fire.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
   playerPlatformSprite =
       new Sprite("sprites/platforms/player.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
-
   // #endregion
 }
 
@@ -243,8 +242,6 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
 
 
   CircleCollider &ballCollider = ballGO.AddComponent<CircleCollider>(0.25f);
-
-
 
   RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
   ballRB.collisionMode = CollisionMode::Continuous;
