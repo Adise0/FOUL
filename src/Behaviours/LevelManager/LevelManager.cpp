@@ -101,6 +101,13 @@ void LevelManager::Update() {
     if (respawnTimer >= respawnTime) {
       isRespawning.set(false);
       respawnTimer = 0;
+      uiManager->Respawn(0);
+    } else {
+      int respawn = respawnTime - std::floor(respawnTimer);
+      if (_prevRespawn != respawn) {
+        _prevRespawn = respawn;
+        uiManager->Respawn(respawn);
+      }
     }
     return;
   }

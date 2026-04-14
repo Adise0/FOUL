@@ -56,6 +56,8 @@ private:
   Crow2D::Types::Sprite *ballPlatformSprite;
   Crow2D::Types::Sprite *fireballPlatformSprite;
   Crow2D::Types::Sprite *playerPlatformSprite;
+
+  int _prevRespawn = 0;
   // #endregion
 
 

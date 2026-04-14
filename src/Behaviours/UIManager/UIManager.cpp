@@ -38,5 +38,9 @@ void UIManager::UpdatePoints(const int &points) {
   if (!renderer) return;
   renderer->bridge->Send("Points", std::to_string(points));
 }
+void UIManager::Respawn(const int &respawn) {
+  if (!renderer) return;
+  renderer->bridge->Send("Respawn", std::to_string(respawn));
+}
 
 } // namespace FOUL::Behaviours

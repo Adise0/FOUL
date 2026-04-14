@@ -21,6 +21,7 @@ private:
   // #region Methods
 public:
   void UpdatePoints(const int &points);
+  void Respawn(const int &respawn);
 
 private:
   static void OnQuit(const std::string &type, const std::string &payload);
