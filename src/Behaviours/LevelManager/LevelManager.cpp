@@ -88,6 +88,11 @@ void LevelManager::Start() {
   uiManager->pauseRenderer->bridge->On("Resume",
                                        [this](const std::string, const std::string) { Resume(); });
 
+  //TODO: get show tut from persistent data instead isRespawning.set(true);
+
+  Pause(true);
+  uiManager->pauseRenderer->bridge->On(
+      "__loaded", [this](const std::string, const std::string) { Pause(true); });
 
   // #endregion
 }
@@ -95,6 +100,7 @@ void LevelManager::Start() {
 void LevelManager::Update() {
   // #region Update
   if (gameOver) return;
+  if (!hasShownTutorial) return;
 
   if (InputManager::GetKey("Escape").wasPressedThisFrame && !pauseGrace) {
     Pause();
@@ -410,6 +416,7 @@ void LevelManager::Resume() {
   uiManager->SetPause(false);
   Time::timeScale = 1.0f;
   pauseGrace = true;
+  hasShownTutorial = true;
   // #endregion
 }
 

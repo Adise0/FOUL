@@ -10,12 +10,10 @@
   position: relative;
   width: 1280px;
   height: 100%;
-  background-image: url("./img/Background.png");
-  background-size: cover;
-  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   overflow: hidden;
 }
 
