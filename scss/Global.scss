@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'Jaro';
+  src: url('./fonts/Jaro-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+}
+
+:root {
+  --accent: #FFF600;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+
+  font-family: 'Jaro';
+  font-synthesis: none;
+}
+
+button {
+  border:none;
+  background:none;
+  outline:none;
+}
+
+a {
+  font-size: 48px;
+  color: black;
+  text-decoration: none;
+  &:hover {
+      transform: translate(3px, -5px);
+      color: var(--accent);
+      text-shadow: -3px 5px black;
+    }
+}
+
+
+.back {
+  position: absolute;
+  left: 40px;
+  bottom: 40px;
+  font-size: 36px;
+
+   &:hover {
+    transform: translate(3px, -5px);
+    color: var(--accent);
+    text-shadow: -3px 5px black;
+   }
+}
