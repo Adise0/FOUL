@@ -37,9 +37,14 @@ void MainScene::LoadBackground() {
   global.AddComponent<Renderer>(Primitives::Square, WindowManager::resolution / cam.screenPpu,
                                 SDL_Color{94, 159, 57, 255});
 
-  global.AddComponent<LevelManager>();
+  LevelManager &levelManager = global.AddComponent<LevelManager>();
   global.AddComponent<UIRenderer>("ui/InGame/InGame.html");
   UIManager &uiManager = global.AddComponent<UIManager>();
+
+  UIRenderer &mainRenderer = global.AddComponent<UIRenderer>("ui/InGame/InGame.html");
+  UIRenderer &pauseRenderer = global.AddComponent<UIRenderer>("ui/Pause/Pause.html");
+  uiManager.mainRenderer = &mainRenderer;
+  uiManager.pauseRenderer = &pauseRenderer;
 
   global.transform->position -= Vector3(0, 0, 100);
 

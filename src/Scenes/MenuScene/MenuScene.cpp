@@ -14,6 +14,7 @@ using namespace Crow2D::Scenes;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Rendering;
+using namespace Behaviours;
 
 
 MenuScene::MenuScene() : Scene("Menu Scene") {}
@@ -24,10 +25,10 @@ void MenuScene::LoadUI() {
 
   GameObject &uiHolderGO = rootGameObject->CreateChild("UI Holder");
   Camera &cam = uiHolderGO.AddComponent<Camera>();
-  UIRenderer &uiRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
+  UIRenderer &mainRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
 
-  uiHolderGO.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
-  uiHolderGO.AddComponent<Behaviours::UIManager>();
+  UIManager &uiManager = uiHolderGO.AddComponent<UIManager>();
+  uiManager.mainRenderer = &mainRenderer;
 }
 } // namespace FOUL
 

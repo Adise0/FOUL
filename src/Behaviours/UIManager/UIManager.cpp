@@ -12,11 +12,11 @@ using namespace Crow2D::Inputs;
 
 void UIManager::Awake() {
   // #region Awake
-  renderer = gameObject->GetComponent<UIRenderer>();
-  if (!renderer) throw std::runtime_error("UIManager requires a UIRenderer component");
 
-  renderer->bridge->On("__quit", OnQuit);
-  renderer->bridge->On("Play", OnPlay);
+  if (!mainRenderer) throw std::runtime_error("UIManager requires a UIRenderer component");
+
+  mainRenderer->bridge->On("__quit", OnQuit);
+  mainRenderer->bridge->On("Play", OnPlay);
   // #endregion
 }
 
@@ -35,12 +35,18 @@ void UIManager::OnPlay(const std::string &type, const std::string &name) {
 }
 
 void UIManager::UpdatePoints(const int &points) {
-  if (!renderer) return;
-  renderer->bridge->Send("Points", std::to_string(points));
+  if (!mainRenderer) return;
+  mainRenderer->bridge->Send("Points", std::to_string(points));
 }
 void UIManager::Respawn(const int &respawn) {
-  if (!renderer) return;
-  renderer->bridge->Send("Respawn", std::to_string(respawn));
+  if (!mainRenderer) return;
+  mainRenderer->bridge->Send("Respawn", std::to_string(respawn));
+}
+
+void UIManager::SetPause(const bool &pause) {
+  if (!pauseRenderer) return;
+  if (pause) pauseRenderer->bridge->Send("Enable");
+  else pauseRenderer->bridge->Send("Disable");
 }
 
 } // namespace FOUL::Behaviours
