@@ -38,7 +38,6 @@ void MainScene::LoadBackground() {
                                 SDL_Color{94, 159, 57, 255});
 
   LevelManager &levelManager = global.AddComponent<LevelManager>();
-  global.AddComponent<UIRenderer>("ui/InGame/InGame.html");
   UIManager &uiManager = global.AddComponent<UIManager>();
 
   UIRenderer &mainRenderer = global.AddComponent<UIRenderer>("ui/InGame/InGame.html");
@@ -47,9 +46,6 @@ void MainScene::LoadBackground() {
   uiManager.pauseRenderer = &pauseRenderer;
 
   global.transform->position -= Vector3(0, 0, 100);
-
-
-
   // #endregion
 }
 

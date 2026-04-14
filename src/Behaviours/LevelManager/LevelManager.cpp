@@ -4,10 +4,6 @@
 #include "PlayerController.h"
 #include "Recrut.h"
 #include "UIManager.h"
-#include <Crow2D/GameObject.h>
-#include <Crow2D/components/colliders/CircleCollider.h>
-#include <Crow2D/dataObjects/Vectors.h>
-#include <Crow2D/properties/PrivateSetProperty.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
 #include <algorithm>
@@ -23,6 +19,7 @@ namespace FOUL::Behaviours {
 using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
+using namespace Crow2D::Inputs;
 using namespace Crow2D::Utils;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
@@ -90,6 +87,8 @@ void LevelManager::Start() {
 
   uiManager->pauseRenderer->bridge->On("Resume",
                                        [this](const std::string, const std::string) { Resume(); });
+
+
   // #endregion
 }
 
@@ -97,7 +96,12 @@ void LevelManager::Update() {
   // #region Update
   if (gameOver) return;
 
+  if (InputManager::GetKey("Escape").wasPressedThisFrame && !pauseGrace) {
+    Pause();
+    return;
+  }
 
+  pauseGrace = false;
 
   if (isRespawning) {
     respawnTimer += Time::deltaTime;
@@ -394,6 +398,7 @@ void LevelManager::MovePlatforms() {
 
 void LevelManager::Pause(const bool &isTutorial) {
   // #region Pause
+  printf("Pausing %d!\n", isTutorial);
   Time::timeScale = 0;
   uiManager->SetPause(true, isTutorial);
   // #endregion
@@ -401,8 +406,10 @@ void LevelManager::Pause(const bool &isTutorial) {
 
 void LevelManager::Resume() {
   // #region Resume
+  printf("Resuming!\n");
   uiManager->SetPause(false);
-  Time::timeScale = 1;
+  Time::timeScale = 1.0f;
+  pauseGrace = true;
   // #endregion
 }
 

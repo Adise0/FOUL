@@ -58,6 +58,8 @@ private:
   Crow2D::Types::Sprite *playerPlatformSprite;
 
   int _prevRespawn = 0;
+  bool pauseGrace = false;
+  bool hasShownTutorial = false;
   // #endregion
 
 

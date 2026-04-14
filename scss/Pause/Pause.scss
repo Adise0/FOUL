@@ -11,9 +11,12 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 125px;
+  gap: 75px;
   overflow: hidden;
+  opacity: 0;
+  color: white;
 }
+
 .items {
   display: flex;
   flex-direction: column;
@@ -45,7 +48,7 @@
   align-items: center;
   justify-content: center;
 
-  gap: 50px;
+  gap: 25px;
 }
 
 .control-item {
@@ -54,7 +57,7 @@
   justify-content: flex-end;
   gap: 20px;
 
-  font-size: 30px;
+  font-size: 25px;
   .icons {
     display: flex;
     align-items: center;
@@ -62,7 +65,7 @@
     width: 200px;
   }
   img {
-    height: 50px;
+    height: 40px;
     image-rendering: pixelated;
   }
 }

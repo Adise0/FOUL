@@ -9,8 +9,10 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 125px;
+  gap: 75px;
   overflow: hidden;
+  opacity: 0;
+  color: white;
 }
 
 .items {
@@ -43,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 25px;
 }
 
 .control-item {
@@ -51,7 +53,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 20px;
-  font-size: 30px;
+  font-size: 25px;
 }
 .control-item .icons {
   display: flex;
@@ -60,7 +62,7 @@
   width: 200px;
 }
 .control-item img {
-  height: 50px;
+  height: 40px;
   image-rendering: pixelated;
 }
 
