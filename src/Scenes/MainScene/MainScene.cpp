@@ -5,6 +5,7 @@
 #include "Data.h"
 #include "LevelManager.h"
 #include "PlayerController.h"
+#include "UIManager.h"
 
 
 namespace FOUL {
@@ -32,11 +33,18 @@ void MainScene::LoadBackground() {
   cam.size = 20;
 
 
+
   global.AddComponent<Renderer>(Primitives::Square, WindowManager::resolution / cam.screenPpu,
                                 SDL_Color{94, 159, 57, 255});
 
   global.AddComponent<LevelManager>();
+  global.AddComponent<UIRenderer>("ui/InGame/InGame.html");
+  UIManager &uiManager = global.AddComponent<UIManager>();
+
   global.transform->position -= Vector3(0, 0, 100);
+
+
+
   // #endregion
 }
 

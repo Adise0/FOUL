@@ -3,6 +3,7 @@
 #include "Data.h"
 #include "PlayerController.h"
 #include "Recrut.h"
+#include "UIManager.h"
 #include <Crow2D/GameObject.h>
 #include <Crow2D/components/colliders/CircleCollider.h>
 #include <Crow2D/dataObjects/Vectors.h>
@@ -36,9 +37,14 @@ static const int weights[] = {
 
 LevelManager *LevelManager::Singleton = nullptr;
 std::unordered_map<Crow2D::GameObject *, PlatformType> LevelManager::platforms;
-int LevelManager::points;
 PrivateSetProperty<LevelManager, bool> LevelManager::isRespawning;
 
+const float LevelManager::GetPoints() const { return _points; };
+void LevelManager::SetPoints(const float &points) {
+  float newPoints = std::floor(points);
+  if (uiManager && newPoints != _points) uiManager->UpdatePoints(newPoints);
+  _points = points;
+}
 
 
 void LevelManager::SetupSingleton() {
@@ -53,6 +59,7 @@ void LevelManager::SetupSingleton() {
 
 void LevelManager::Awake() {
   // #region Awake
+  uiManager = gameObject->GetComponent<UIManager>();
   isRespawning.set(false);
   SetupSingleton();
   fireBallSprite = new Sprite("sprites/FireBall.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
@@ -88,6 +95,7 @@ void LevelManager::Update() {
   if (gameOver) return;
 
 
+
   if (isRespawning) {
     respawnTimer += Time::deltaTime;
     if (respawnTimer >= respawnTime) {
@@ -96,6 +104,8 @@ void LevelManager::Update() {
     }
     return;
   }
+
+  points += Time::deltaTime;
 
   CheckBalls();
   MovePlatforms();
@@ -130,10 +140,12 @@ void LevelManager::HitPlatform(GameObject *platform, Ball *ball) {
   switch (it->second) {
   case PlatformType::Ball:
     SpawnBall(BallType::Normal, (Vector2)platform->transform->position);
+    points += 1;
     break;
 
   case PlatformType::Player:
     SpawnRecrut((Vector2)platform->transform->position, RecrutType::Player);
+    points += 1;
     break;
 
   case PlatformType::Wall:
@@ -143,8 +155,9 @@ void LevelManager::HitPlatform(GameObject *platform, Ball *ball) {
         wallIt->second++;
         if (wallIt->second < 3 && ball->ballType != BallType::Fire) {
           wallIt->first->GetComponent<Renderer>()->SetSprite(wallSprites[wallIt->second]);
-
           preventDestroy = true;
+        } else {
+          points += 10;
         }
       }
       break;
@@ -155,10 +168,12 @@ void LevelManager::HitPlatform(GameObject *platform, Ball *ball) {
     break;
 
   default:
+    points += 5;
     break;
   }
 
   if (preventDestroy) return;
+
   DestroyPlatform(platform);
   // #endregion
 }

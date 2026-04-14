@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Recrut.h"
+#include "UIManager.h"
 #include <Crow2D/Crow2D.h>
 #include <Crow2D/properties/PrivateSetProperty.h>
+#include <Crow2D/properties/Property.h>
 #include <cmath>
 #include <unordered_map>
 #include <vector>
@@ -14,11 +16,15 @@ class Ball;
 enum class PlatformType { Normal, Player, Ball, FireBall, Wall, Count };
 enum class BallType { Normal, Fire };
 class LevelManager : public Crow2D::Components::Behaviour {
+  // #region Get/Set
+  const float GetPoints() const;
+  void SetPoints(const float &points);
+  // #endregion
+
   // #region Data
 public:
   static LevelManager *Singleton;
   static std::unordered_map<Crow2D::GameObject *, PlatformType> platforms;
-  static int points;
   static PRIVATE_SET_PROPERTY(LevelManager, bool, isRespawning);
 
 private:
@@ -29,8 +35,11 @@ private:
 
 public:
   bool gameOver = false;
+  PROPERTY(LevelManager, const float, points, GetPoints, SetPoints);
 
 private:
+  UIManager *uiManager = nullptr;
+  float _points = 0;
   float currentWaitTime = 0;
   float platformSpeed = 0;
   float currentTimer = 0;

@@ -24,7 +24,7 @@ void UIManager::Awake() {
 void UIManager::OnQuit(const std::string &type, const std::string &payload) { Application::Quit(); }
 void UIManager::OnPlay(const std::string &type, const std::string &name) {
   // #region OnPlay
-  // TODO: Handle name for score and shi
+  Data::currentPlayer = name;
   MainScene *mainScene = new MainScene();
   Scenes::SceneManager::SetSceneAsActive(*mainScene);
 
@@ -32,6 +32,11 @@ void UIManager::OnPlay(const std::string &type, const std::string &name) {
   Data::mainScene = mainScene;
   // TODO: add scene object deletion on sceneManager (Crow2D)
   // #endregion
+}
+
+void UIManager::UpdatePoints(const int &points) {
+  if (!renderer) return;
+  renderer->bridge->Send("Points", std::to_string(points));
 }
 
 } // namespace FOUL::Behaviours

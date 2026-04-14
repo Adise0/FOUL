@@ -10,5 +10,7 @@ public:
 
   static inline Crow2D::Scenes::Scene *menuScene = nullptr;
   static inline Crow2D::Scenes::Scene *mainScene = nullptr;
+
+  static inline std::string currentPlayer = "";
 };
 } // namespace FOUL

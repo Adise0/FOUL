@@ -19,6 +19,9 @@ private:
   // #endregion
 
   // #region Methods
+public:
+  void UpdatePoints(const int &points);
+
 private:
   static void OnQuit(const std::string &type, const std::string &payload);
   static void OnPlay(const std::string &type, const std::string &name);
