@@ -3,6 +3,7 @@
 #include "MainScene.h"
 #include <Crow2D/SceneManager.h>
 #include <stdexcept>
+#include <string>
 
 namespace FOUL::Behaviours {
 using namespace Crow2D;
@@ -43,9 +44,9 @@ void UIManager::Respawn(const int &respawn) {
   mainRenderer->bridge->Send("Respawn", std::to_string(respawn));
 }
 
-void UIManager::SetPause(const bool &pause) {
+void UIManager::SetPause(const bool &pause, const bool &isTutorial) {
   if (!pauseRenderer) return;
-  if (pause) pauseRenderer->bridge->Send("Enable");
+  if (pause) pauseRenderer->bridge->Send("Enable", std::to_string(isTutorial));
   else pauseRenderer->bridge->Send("Disable");
 }
 

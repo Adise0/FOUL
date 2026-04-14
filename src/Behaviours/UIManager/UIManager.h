@@ -25,7 +25,7 @@ private:
 public:
   void UpdatePoints(const int &points);
   void Respawn(const int &respawn);
-  void SetPause(const bool &pause);
+  void SetPause(const bool &pause, const bool &isTutorial = false);
 
 private:
   static void OnQuit(const std::string &type, const std::string &payload);

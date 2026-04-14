@@ -87,6 +87,9 @@ void LevelManager::Start() {
   gameOver = false;
   Reset();
   SpawnBall(BallType::Normal, Vector2::Zero);
+
+  uiManager->pauseRenderer->bridge->On("Resume",
+                                       [this](const std::string, const std::string) { Resume(); });
   // #endregion
 }
 
@@ -327,8 +330,6 @@ void LevelManager::CheckBalls() {
   // #endregion
 }
 
-
-
 void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
   // #region SpawnRecrut
   GameObject &recrutGO = gameObject->scene->rootGameObject->CreateChild("Recrut");
@@ -364,14 +365,10 @@ void LevelManager::SpawnRecrut(const Vector2 &pos, const RecrutType &type) {
 
 void LevelManager::FireFireBall() {
   // #region FireFireBall
-
-
   Vector2 pos = Vector2(PlayerController::Singleton->gameObject->transform->position);
   Ball *left = SpawnBall(BallType::Fire, pos);
   Ball *center = SpawnBall(BallType::Fire, pos);
   Ball *right = SpawnBall(BallType::Fire, pos);
-
-
 
   const std::function<Vector2(Vector2, float)> rotate = [](Vector2 base, float angle) {
     const float rad = angle * DEG2RAD;
@@ -395,7 +392,22 @@ void LevelManager::MovePlatforms() {
   // #endregion
 }
 
+void LevelManager::Pause(const bool &isTutorial) {
+  // #region Pause
+  Time::timeScale = 0;
+  uiManager->SetPause(true, isTutorial);
+  // #endregion
+}
+
+void LevelManager::Resume() {
+  // #region Resume
+  uiManager->SetPause(false);
+  Time::timeScale = 1;
+  // #endregion
+}
+
 void LevelManager::OnDestroy() {
+  // #region OnDestroy
   delete fireBallSprite;
   delete ballSprite;
   for (Sprite *spr : wallSprites) {
@@ -406,6 +418,7 @@ void LevelManager::OnDestroy() {
   delete ballPlatformSprite;
   delete playerPlatformSprite;
   delete fireballPlatformSprite;
+  // #endregion
 }
 
 } // namespace FOUL::Behaviours

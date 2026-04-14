@@ -87,6 +87,8 @@ private:
   void SetupSingleton();
   void SpawnRow();
   void MovePlatforms();
+  void Pause(const bool &isTutorial = false);
+  void Resume();
 
   // #endregion
 };
