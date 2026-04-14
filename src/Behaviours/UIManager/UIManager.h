@@ -21,6 +21,7 @@ private:
   // #region Methods
 private:
   static void OnQuit(const std::string &type, const std::string &payload);
+  static void OnPlay(const std::string &type, const std::string &name);
   // #endregion
 };
 } // namespace FOUL::Behaviours

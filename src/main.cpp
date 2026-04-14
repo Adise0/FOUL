@@ -1,5 +1,6 @@
 
 
+#include "Data.h"
 #include "Scenes/MenuScene/MenuScene.h"
 #include <Crow2D/Crow2D.h>
 #include <cstdio>
@@ -11,7 +12,7 @@ int main() {
   Config::Init("FOUL!");
 
   MenuScene *menuScene = new MenuScene();
-
+  Data::menuScene = menuScene;
   Engine::Run(*menuScene);
   printf("Bye bye!\n");
 }

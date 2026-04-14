@@ -4,7 +4,7 @@ const submit = document.querySelector<HTMLButtonElement>("button[type=submit]");
 
 form.addEventListener("submit", (e: Event) => {
   e.preventDefault();
-  console.log("Form submitted!");
+  Send("Play", input.value);
 });
 
 input.addEventListener("input", (e) => {
