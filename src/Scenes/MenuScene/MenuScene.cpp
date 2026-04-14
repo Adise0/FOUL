@@ -2,6 +2,7 @@
 
 #include "MenuScene.h"
 #include "LevelManager.h"
+#include "UIManager.h"
 #include <Crow2D/Crow2dUtils.h>
 #include <Crow2D/dataObjects/Sprite.h>
 #include <cstdio>
@@ -26,6 +27,7 @@ void MenuScene::LoadUI() {
   UIRenderer &uiRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
 
   uiHolderGO.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
+  uiHolderGO.AddComponent<Behaviours::UIManager>();
 }
 } // namespace FOUL
 

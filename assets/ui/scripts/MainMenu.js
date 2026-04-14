@@ -1,2 +1,3 @@
 "use strict";
-Send("Hello!");
+const quitBtn = document.querySelector(".back");
+quitBtn.addEventListener("click", () => Send("__quit"));
