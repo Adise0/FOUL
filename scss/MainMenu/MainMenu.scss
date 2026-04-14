@@ -4,18 +4,17 @@ body {
   justify-content: center;
 }
 
-.dev {
-  height: 800px;
-  width: 1280px;
-  background-color: red;
-}
-
 .root {
   position: relative;
   height: 100vh;
   width: 100vw;
   display: flex;
   background-image: url("../img/Background.png");
+}
+.dudes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .title {
@@ -40,6 +39,3 @@ body {
 .play {
   font-size: 96px;
 }
-
-
-
