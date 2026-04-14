@@ -2,8 +2,10 @@
   const points = document.querySelector<HTMLParagraphElement>(".points");
   const respawn = document.querySelector<HTMLParagraphElement>(".respawn");
   const holder = document.querySelector<HTMLDivElement>(".holder");
+  let _points = 0;
 
   window.bridge.on("Points", (newPoints) => {
+    _points = parseInt(newPoints);
     points.textContent = newPoints;
   });
 
@@ -29,4 +31,6 @@
       },
     );
   });
+
+  window.bridge.on("GameOver", (name: string) => {});
 }

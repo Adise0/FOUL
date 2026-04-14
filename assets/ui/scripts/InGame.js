@@ -3,7 +3,9 @@
     const points = document.querySelector(".points");
     const respawn = document.querySelector(".respawn");
     const holder = document.querySelector(".holder");
+    let _points = 0;
     window.bridge.on("Points", (newPoints) => {
+        _points = parseInt(newPoints);
         points.textContent = newPoints;
     });
     window.bridge.on("Respawn", (content) => {
@@ -25,4 +27,5 @@
             fill: "forwards",
         });
     });
+    window.bridge.on("GameOver", (name) => { });
 }
