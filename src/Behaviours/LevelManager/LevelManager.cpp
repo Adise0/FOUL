@@ -47,7 +47,6 @@ void LevelManager::SetPoints(const float &points) {
 
 void LevelManager::SetupSingleton() {
   // #region SetupSingleton
-  printf("Awaking!\n");
   // if (Singleton != nullptr && Singleton != this) {
   //   Destroy(this);
   //   return;
@@ -422,7 +421,6 @@ void LevelManager::MovePlatforms() {
 
 void LevelManager::Pause(const bool &isTutorial) {
   // #region Pause
-  printf("Pausing %d!\n", isTutorial);
   Time::timeScale = 0;
   uiManager->SetPause(true, isTutorial);
   // #endregion
@@ -434,14 +432,13 @@ void LevelManager::GameOver() {
   int pb = uiManager->GetPB(Data::currentPlayer);
   bool isPb = pb == -1 || pb < points;
   uiManager->GameOver(Data::currentPlayer, points, isPb);
-  uiManager->SavePB(Data::currentPlayer, points);
+  if (isPb) uiManager->SavePB(Data::currentPlayer, points);
   Data::currentPlayer = "UNKNOWN";
   // #endregion
 }
 
 void LevelManager::Resume() {
   // #region Resume
-  printf("Resuming!\n");
   uiManager->SetPause(false);
   Time::timeScale = 1.0f;
   pauseGrace = true;

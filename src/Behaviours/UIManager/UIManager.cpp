@@ -58,7 +58,6 @@ void UIManager::UpdatePoints(const int &points) {
 
 void UIManager::GameOver(const std::string &name, const int &points, const bool &isPersonalBest) {
   if (!mainRenderer) return;
-  printf("Saving %s %s\n", name.c_str(), std::to_string(points).c_str());
   mainRenderer->bridge->Send(
       "GameOver", "{\"name\": \"" + name + "\", \"points\": \"" + std::to_string(points) +
                       "\", \"isPersonalBest\": " + (isPersonalBest ? "true" : "false") + "}");
