@@ -16,6 +16,7 @@
   width: 475px;
   background-color: rgba(0, 0, 0, 0.4);
   padding: 20px 40px;
+  overflow: auto;
 }
 
 .item {
