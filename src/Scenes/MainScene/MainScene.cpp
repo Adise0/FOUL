@@ -31,6 +31,7 @@ void MainScene::LoadBackground() {
 
   Camera &cam = global.AddComponent<Camera>();
   cam.size = 20;
+  cam.SetAsActiveCamera();
 
 
 

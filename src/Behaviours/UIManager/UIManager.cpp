@@ -32,8 +32,8 @@ void UIManager::OnPlay(const std::string &type, const std::string &name) {
   MainScene *mainScene = new MainScene();
   Scenes::SceneManager::SetSceneAsActive(*mainScene);
 
-  if (Data::mainScene) delete Data::mainScene;
-  Data::mainScene = mainScene;
+  // if (Data::mainScene) delete Data::mainScene;
+  // Data::mainScene = mainScene;
   // TODO: add scene object deletion on sceneManager (Crow2D)
   // #endregion
 }

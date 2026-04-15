@@ -105,8 +105,8 @@ void LevelManager::Update() {
       MenuScene *menuScene = new MenuScene();
       Scenes::SceneManager::SetSceneAsActive(*menuScene);
 
-      if (Data::menuScene) delete Data::menuScene;
-      Data::menuScene = menuScene;
+      // if (Data::menuScene) delete Data::menuScene;
+      // Data::menuScene = menuScene;
     }
     return;
   }

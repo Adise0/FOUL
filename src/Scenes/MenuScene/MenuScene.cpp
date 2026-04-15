@@ -4,6 +4,7 @@
 #include "LevelManager.h"
 #include "UIManager.h"
 #include <Crow2D/Crow2dUtils.h>
+#include <Crow2D/components/Renderer.h>
 #include <Crow2D/dataObjects/Sprite.h>
 #include <cstdio>
 
@@ -25,9 +26,11 @@ void MenuScene::LoadUI() {
 
   GameObject &uiHolderGO = rootGameObject->CreateChild("UI Holder");
   Camera &cam = uiHolderGO.AddComponent<Camera>();
+  cam.SetAsActiveCamera();
   UIRenderer &mainRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
 
   UIManager &uiManager = uiHolderGO.AddComponent<UIManager>();
+  uiHolderGO.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
   uiManager.mainRenderer = &mainRenderer;
 }
 } // namespace FOUL
