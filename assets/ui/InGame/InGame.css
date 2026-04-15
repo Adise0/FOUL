@@ -38,6 +38,7 @@
   font-size: 20px;
   opacity: 0;
   animation: pb 0.7s infinite ease-in-out;
+  text-shadow: -3px 3px 0 black;
 }
 
 @keyframes pb {

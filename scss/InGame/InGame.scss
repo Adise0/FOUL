@@ -18,6 +18,8 @@
 
   color: white;
   overflow: hidden;
+
+  // background-color: rgba($color: #000000, $alpha: 0.4);
 }
 
 .content {
@@ -44,6 +46,8 @@
   opacity: 0;
 
   animation: pb 0.7s infinite ease-in-out;
+
+  text-shadow: -3px 3px 0 black;
 }
 
 @keyframes pb {

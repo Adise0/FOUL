@@ -1,6 +1,7 @@
 "use strict";
 {
     const points = document.querySelector(".points");
+    const pointsFinal = document.querySelector("h1");
     const respawn = document.querySelector(".respawn");
     const holder = document.querySelector(".holder");
     const content = document.querySelector(".content");
@@ -35,6 +36,6 @@
         content.style.opacity = "1";
         personalBest.style.opacity = data.isPersonalBest ? "1" : "0";
         dude.textContent = data.name;
-        points.textContent = data.points;
+        pointsFinal.textContent = data.points;
     });
 }

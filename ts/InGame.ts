@@ -1,5 +1,6 @@
 {
   const points = document.querySelector<HTMLParagraphElement>(".points")!;
+  const pointsFinal = document.querySelector<HTMLParagraphElement>("h1")!;
   const respawn = document.querySelector<HTMLParagraphElement>(".respawn")!;
   const holder = document.querySelector<HTMLDivElement>(".holder")!;
 
@@ -49,6 +50,6 @@
     content.style.opacity = "1";
     personalBest.style.opacity = data.isPersonalBest ? "1" : "0";
     dude.textContent = data.name;
-    points.textContent = data.points;
+    pointsFinal.textContent = data.points;
   });
 }
