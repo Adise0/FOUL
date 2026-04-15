@@ -47,10 +47,11 @@ void LevelManager::SetPoints(const float &points) {
 
 void LevelManager::SetupSingleton() {
   // #region SetupSingleton
-  if (Singleton != nullptr && Singleton != this) {
-    Destroy(this);
-    return;
-  }
+  printf("Awaking!\n");
+  // if (Singleton != nullptr && Singleton != this) {
+  //   Destroy(this);
+  //   return;
+  // }
   Singleton = this;
   // #endregion
 }
@@ -102,8 +103,15 @@ void LevelManager::Update() {
   // #region Update
   if (isGameOver) {
     if (InputManager::GetKey("Escape").wasPressedThisFrame) {
+
+
+
       MenuScene *menuScene = new MenuScene();
       Scenes::SceneManager::SetSceneAsActive(*menuScene);
+
+      // Singleton = nullptr;
+      platforms.clear();
+      isRespawning.set(false);
 
       // if (Data::menuScene) delete Data::menuScene;
       // Data::menuScene = menuScene;
@@ -443,6 +451,8 @@ void LevelManager::Resume() {
 
 void LevelManager::OnDestroy() {
   // #region OnDestroy
+
+
   delete fireBallSprite;
   delete ballSprite;
   for (Sprite *spr : wallSprites) {

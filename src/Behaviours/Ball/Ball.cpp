@@ -42,6 +42,7 @@ void Ball::Start() {
 
 void Ball::Update() {
   // #region Update
+  printf("Update!\n");
   if (LevelManager::Singleton->isGameOver) return;
   if (LevelManager::isRespawning && ballType == BallType::Normal) return;
   Move();

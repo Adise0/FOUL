@@ -1,9 +1,3 @@
 "use strict";
-const quitBtn = document.querySelector(".back");
+const quitBtn = document.querySelector("#quit");
 quitBtn.addEventListener("click", () => Send("__quit"));
-const leaderboardLink = document.querySelector("#leaderboard");
-leaderboardLink.addEventListener("click", () => window.bridge.emit("Leaderboard"));
-window.bridge.on("Leaderboard", (payload) => {
-    const data = JSON.parse(payload);
-    // TODO: inject
-});

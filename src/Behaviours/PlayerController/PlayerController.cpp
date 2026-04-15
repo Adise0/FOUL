@@ -26,10 +26,10 @@ PlayerController *PlayerController::Singleton = nullptr;
 
 void PlayerController::SetupSingleton() {
   // #region SetupSingleton
-  if (Singleton != nullptr && Singleton != this) {
-    Destroy(this);
-    return;
-  }
+  // if (Singleton != nullptr && Singleton != this) {
+  //   Destroy(this);
+  //   return;
+  // }
   Singleton = this;
   // #endregion
 }
@@ -200,6 +200,7 @@ void PlayerController::OnColliderEnter(const Collider &other) {
 }
 
 void PlayerController::OnDestroy() {
+  Singleton = nullptr;
   for (Sprite *spr : playerSprites) {
     delete spr;
   }
