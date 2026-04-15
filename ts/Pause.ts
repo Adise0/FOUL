@@ -1,15 +1,15 @@
 {
   let isShowing = false;
 
-  const holder = document.querySelector<HTMLDivElement>(".holder");
-  const paused = document.querySelector<HTMLDivElement>(".paused");
+  const holder = document.querySelector<HTMLDivElement>(".holder")!;
+  const paused = document.querySelector<HTMLDivElement>(".paused")!;
 
   window.bridge.on("Disable", () => {
     holder.style.opacity = "0";
     isShowing = false;
   });
 
-  window.bridge.on("Enable", (payload: string) => {
+  window.bridge.on("Enable", (payload) => {
     holder.style.opacity = "1";
     isShowing = true;
 

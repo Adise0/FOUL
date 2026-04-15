@@ -1,3 +1,3 @@
-const quitBtn = document.querySelector(".back");
+const quitBtn = document.querySelector(".back")!;
 
 quitBtn!.addEventListener("click", () => Send("__quit"));

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/Crow2dUtils.h>
+#include <string>
 #include <vector>
 
 namespace FOUL::Behaviours {
@@ -13,6 +15,7 @@ public:
   Crow2D::Components::UIRenderer *mainRenderer = nullptr;
 
 private:
+  const std::string SavesFile = Crow2D::Crow2dUtils::RootDirectory + "/players.bin";
   // #endregion
 
   // #region Crow2D
@@ -24,10 +27,17 @@ private:
   // #region Methods
 public:
   void UpdatePoints(const int &points);
+  void GameOver(const std::string &name, const int &points, const bool &isPersonalBest);
   void Respawn(const int &respawn);
   void SetPause(const bool &pause, const bool &isTutorial = false);
 
+  const int GetPB(const std::string &name) const;
+  void SavePB(const std::string &name, const int &points) const;
+
 private:
+  std::map<std::string, int> LoadPBs() const;
+  void SavePBs(const std::map<std::string, int> &map) const;
+
   static void OnQuit(const std::string &type, const std::string &payload);
   static void OnPlay(const std::string &type, const std::string &name);
 

@@ -1,14 +1,14 @@
 {
-  const points = document.querySelector<HTMLParagraphElement>(".points");
-  const respawn = document.querySelector<HTMLParagraphElement>(".respawn");
-  const holder = document.querySelector<HTMLDivElement>(".holder");
+  const points = document.querySelector<HTMLParagraphElement>(".points")!;
+  const respawn = document.querySelector<HTMLParagraphElement>(".respawn")!;
+  const holder = document.querySelector<HTMLDivElement>(".holder")!;
 
-  const content = document.querySelector<HTMLDivElement>(".content");
-  const personalBest = document.querySelector<HTMLDivElement>(".personalBest");
-  const dude = document.querySelector<HTMLDivElement>(".dude");
+  const content = document.querySelector<HTMLDivElement>(".content")!;
+  const personalBest = document.querySelector<HTMLDivElement>(".personalBest")!;
+  const dude = document.querySelector<HTMLDivElement>(".dude")!;
 
   window.bridge.on("Points", (newPoints) => {
-    points.textContent = newPoints;
+    points.textContent = newPoints ?? "000";
   });
 
   window.bridge.on("Respawn", (content) => {
@@ -20,7 +20,7 @@
       respawn.style.opacity = "1";
     }
 
-    respawn.textContent = content;
+    respawn.textContent = content ?? "";
     respawn.animate(
       [
         { transform: "translate(20px, -10px) rotateZ(20deg)" },
@@ -35,14 +35,17 @@
   });
 
   interface GameOverData {
-    points: string;
     name: string;
+    points: string;
     isPersonalBest: boolean;
   }
 
-  window.bridge.on("GameOver", (payload: string) => {
-    const data: GameOverData = JSON.parse(payload);
+  window.bridge.on("GameOver", (payload) => {
+    const data: GameOverData = JSON.parse(payload as string);
 
+    console.log(JSON.stringify(data));
+
+    holder.style.backgroundColor = "rgba(0,0,0, 0.4)";
     content.style.opacity = "1";
     personalBest.style.opacity = data.isPersonalBest ? "1" : "0";
     dude.textContent = data.name;

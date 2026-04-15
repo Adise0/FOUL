@@ -16,7 +16,7 @@ void Recrut::Awake() {
 
 void Recrut::Update() {
   // #region Update
-  if (LevelManager::Singleton->gameOver || LevelManager::isRespawning) return;
+  if (LevelManager::Singleton->isGameOver || LevelManager::isRespawning) return;
   Move();
   // #endregion
 }

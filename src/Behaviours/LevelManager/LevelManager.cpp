@@ -407,7 +407,7 @@ void LevelManager::MovePlatforms() {
   // #region MovePlatforms
   for (auto &[platform, _] : platforms) {
     platform->transform->position += Vector3::Down * platformSpeed * Time::deltaTime;
-    if (platform->transform->position.get().y <= Data::PaddleY) isGameOver.set(true);
+    if (platform->transform->position.get().y <= Data::PaddleY) GameOver();
   }
   // #endregion
 }
@@ -423,6 +423,11 @@ void LevelManager::Pause(const bool &isTutorial) {
 void LevelManager::GameOver() {
   // #region GameOver
   isGameOver.set(true);
+  int pb = uiManager->GetPB(Data::currentPlayer);
+  bool isPb = pb == -1 || pb < points;
+  uiManager->GameOver(Data::currentPlayer, points, isPb);
+  uiManager->SavePB(Data::currentPlayer, points);
+  Data::currentPlayer = "UNKNOWN";
   // #endregion
 }
 

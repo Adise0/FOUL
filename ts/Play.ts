@@ -1,6 +1,8 @@
-const form = document.querySelector<HTMLFormElement>("form");
-const input = document.querySelector<HTMLInputElement>("input");
-const submit = document.querySelector<HTMLButtonElement>("button[type=submit]");
+const form = document.querySelector<HTMLFormElement>("form")!;
+const input = document.querySelector<HTMLInputElement>("input")!;
+const submit = document.querySelector<HTMLButtonElement>(
+  "button[type=submit]",
+)!;
 
 form.addEventListener("submit", (e: Event) => {
   e.preventDefault();
