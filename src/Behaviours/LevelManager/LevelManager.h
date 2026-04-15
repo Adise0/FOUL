@@ -34,7 +34,7 @@ private:
   static constexpr float PlatformWidth = 4;
 
 public:
-  bool gameOver = false;
+  PRIVATE_SET_PROPERTY(LevelManager, bool, isGameOver);
   PROPERTY(LevelManager, const float, points, GetPoints, SetPoints);
 
 private:
@@ -80,6 +80,8 @@ public:
 
   void HitPlatform(Crow2D::GameObject *platform, Ball *ball);
   void FireFireBall();
+
+  void GameOver();
 
 private:
   void DestroyPlatform(Crow2D::GameObject *platform);

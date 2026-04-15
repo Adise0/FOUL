@@ -64,7 +64,7 @@ void PlayerController::Start() { UpdatePlayers(); }
 
 void PlayerController::Update() {
   // #region Update
-  if (LevelManager::Singleton->gameOver) return;
+  if (LevelManager::Singleton->isGameOver) return;
   Move();
   // #endregion
 }
@@ -146,7 +146,7 @@ void PlayerController::RemovePlayer() {
   UpdatePlayers();
   if (playerCount != 0) return;
 
-  LevelManager::Singleton->gameOver = true;
+  LevelManager::Singleton->GameOver();
   // #endregion
 }
 void PlayerController::AddPlayer(GameObject *recrut) {

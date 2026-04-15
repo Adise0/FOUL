@@ -2,10 +2,12 @@
   const points = document.querySelector<HTMLParagraphElement>(".points");
   const respawn = document.querySelector<HTMLParagraphElement>(".respawn");
   const holder = document.querySelector<HTMLDivElement>(".holder");
-  let _points = 0;
+
+  const content = document.querySelector<HTMLDivElement>(".content");
+  const personalBest = document.querySelector<HTMLDivElement>(".personalBest");
+  const dude = document.querySelector<HTMLDivElement>(".dude");
 
   window.bridge.on("Points", (newPoints) => {
-    _points = parseInt(newPoints);
     points.textContent = newPoints;
   });
 
@@ -32,5 +34,18 @@
     );
   });
 
-  window.bridge.on("GameOver", (name: string) => {});
+  interface GameOverData {
+    points: string;
+    name: string;
+    isPersonalBest: boolean;
+  }
+
+  window.bridge.on("GameOver", (payload: string) => {
+    const data: GameOverData = JSON.parse(payload);
+
+    content.style.opacity = "1";
+    personalBest.style.opacity = data.isPersonalBest ? "1" : "0";
+    dude.textContent = data.name;
+    points.textContent = data.points;
+  });
 }

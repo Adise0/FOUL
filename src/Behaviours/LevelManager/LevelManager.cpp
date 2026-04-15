@@ -1,6 +1,7 @@
 #include "LevelManager.h"
 #include "Ball.h"
 #include "Data.h"
+#include "MenuScene.h"
 #include "PlayerController.h"
 #include "Recrut.h"
 #include "UIManager.h"
@@ -58,6 +59,7 @@ void LevelManager::Awake() {
   // #region Awake
   uiManager = gameObject->GetComponent<UIManager>();
   isRespawning.set(false);
+  isGameOver.set(false);
   SetupSingleton();
   fireBallSprite = new Sprite("sprites/FireBall.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
   ballSprite = new Sprite("sprites/Ball.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
@@ -81,7 +83,6 @@ void LevelManager::Awake() {
 
 void LevelManager::Start() {
   // #region Start
-  gameOver = false;
   Reset();
   SpawnBall(BallType::Normal, Vector2::Zero);
 
@@ -99,7 +100,16 @@ void LevelManager::Start() {
 
 void LevelManager::Update() {
   // #region Update
-  if (gameOver) return;
+  if (isGameOver) {
+    if (InputManager::GetKey("Escape").wasPressedThisFrame) {
+      MenuScene *menuScene = new MenuScene();
+      Scenes::SceneManager::SetSceneAsActive(*menuScene);
+
+      if (Data::menuScene) delete Data::menuScene;
+      Data::menuScene = menuScene;
+    }
+    return;
+  }
   if (!hasShownTutorial) return;
 
   if (InputManager::GetKey("Escape").wasPressedThisFrame && !pauseGrace) {
@@ -326,13 +336,13 @@ void LevelManager::CheckBalls() {
     Destroy(*ball);
     ballFell = true;
   }
-  if (!ballFell || gameOver) return;
+  if (!ballFell || isGameOver) return;
 
   std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
   if (balls.empty()) {
 
     PlayerController::Singleton->RemovePlayer();
-    if (gameOver) return;
+    if (isGameOver) return;
     Ball *ball = SpawnBall(BallType::Normal, Vector2::Zero);
     isRespawning.set(true);
     // TODO: wait a second
@@ -397,7 +407,7 @@ void LevelManager::MovePlatforms() {
   // #region MovePlatforms
   for (auto &[platform, _] : platforms) {
     platform->transform->position += Vector3::Down * platformSpeed * Time::deltaTime;
-    if (platform->transform->position.get().y <= Data::PaddleY) gameOver = true;
+    if (platform->transform->position.get().y <= Data::PaddleY) isGameOver.set(true);
   }
   // #endregion
 }
@@ -407,6 +417,12 @@ void LevelManager::Pause(const bool &isTutorial) {
   printf("Pausing %d!\n", isTutorial);
   Time::timeScale = 0;
   uiManager->SetPause(true, isTutorial);
+  // #endregion
+}
+
+void LevelManager::GameOver() {
+  // #region GameOver
+  isGameOver.set(true);
   // #endregion
 }
 
