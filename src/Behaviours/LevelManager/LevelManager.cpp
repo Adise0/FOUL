@@ -25,11 +25,11 @@ using namespace Crow2D::Utils;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 static const int weights[] = {
-    65,  // Normal
-    7,   // Player
-    10,  // Ball
-    200, // FireBall
-    15,  //Wall
+    65, // Normal
+    7,  // Player
+    10, // Ball
+    2,  // FireBall
+    15, //Wall
 };
 
 
@@ -412,6 +412,9 @@ void LevelManager::FireFireBall() {
 
 void LevelManager::MovePlatforms() {
   // #region MovePlatforms
+  platformSpeed += 1.0f / 120.0f * Time::deltaTime;
+  currentWaitTime -= 1.0f / 60.0f * Time::deltaTime;
+
   for (auto &[platform, _] : platforms) {
     platform->transform->position += Vector3::Down * platformSpeed * Time::deltaTime;
     if (platform->transform->position.get().y <= Data::PaddleY) GameOver();
