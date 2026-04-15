@@ -21,7 +21,20 @@ void UIManager::Awake() {
 
   mainRenderer->bridge->On("__quit", OnQuit);
   mainRenderer->bridge->On("Play", OnPlay);
+  mainRenderer->bridge->On("Leaderboard",
+                           [this](const std::string, const std::string) { OnLeaderboard(); });
   // #endregion
+}
+void UIManager::OnLeaderboard() {
+  std::map<std::string, int> pbs = LoadPBs();
+  std::string json = "[";
+  for (auto &[name, points] : pbs) {
+    json += "{\"name\": \"" + name + "\", \"points\": " + std::to_string(points) + "},";
+  }
+  if (json.back() == ',') json.pop_back();
+  json += "]";
+
+  mainRenderer->bridge->Send("Leaderboard", json);
 }
 
 
@@ -42,6 +55,7 @@ void UIManager::UpdatePoints(const int &points) {
   if (!mainRenderer) return;
   mainRenderer->bridge->Send("Points", std::to_string(points));
 }
+
 void UIManager::GameOver(const std::string &name, const int &points, const bool &isPersonalBest) {
   if (!mainRenderer) return;
   printf("Saving %s %s\n", name.c_str(), std::to_string(points).c_str());
