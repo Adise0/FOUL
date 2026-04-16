@@ -106,7 +106,7 @@ void LevelManager::Start() {
 
 
 
-  ambianceEmitter->SetVolume(0.5f);
+  ambianceEmitter->SetVolume(0.7f);
   ambianceEmitter->Play(amiance);
 
   // #endregion
@@ -355,7 +355,7 @@ void LevelManager::CheckBalls() {
   bool ballFell = false;
   for (Ball *ball : balls) {
 
-    ball->speed = 10.0f + (platformSpeed - 0.5f) * 3.0f;
+    ball->speed = 15.0f + (platformSpeed - 0.5f) * 3.0f;
 
     if (ball->transform->position.get().y > Data::PaddleY - 4) continue;
     ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
@@ -459,7 +459,6 @@ void LevelManager::GameOver() {
   bool isPb = pb == -1 || pb < points;
   uiManager->GameOver(Data::currentPlayer, points, isPb);
   if (isPb) uiManager->SavePB(Data::currentPlayer, points);
-  Data::currentPlayer = "UNKNOWN";
   // #endregion
 }
 
