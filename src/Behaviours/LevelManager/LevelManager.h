@@ -50,7 +50,8 @@ private:
   float respawnTime = 3;
   float respawnTimer = 0;
   int nextPlatform = 0;
-  std::vector<Crow2D::GameObject *> balls;
+
+  std::vector<Ball *> balls;
   std::unordered_map<Crow2D::GameObject *, short> walls;
 
   Crow2D::Types::Sprite *ballSprite;

@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "LevelManager.h"
 #include "Ball.h"
 #include "Data.h"
@@ -5,8 +7,6 @@
 #include "PlayerController.h"
 #include "Recrut.h"
 #include "UIManager.h"
-#include <Crow2D/components/SoundEmitter.h>
-#include <Crow2D/dataObjects/AudioClip.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
 #include <algorithm>
@@ -171,9 +171,10 @@ void LevelManager::Update() {
 
 void LevelManager::Reset() {
   // #region Reset
-  currentWaitTime = 7;
+  currentWaitTime = 8;
   platformSpeed = 0.3f;
   currentTimer = INFINITY;
+  respawnTimer = 0;
   // #endregion
 }
 
@@ -335,7 +336,7 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
 
   if (type == BallType::Normal) {
     ball->direction = dir;
-    balls.push_back(&ballGO);
+    balls.push_back(ball);
     ballGO.AddComponent<Renderer>(ballSprite, Vector2(0.5f, 0.5f));
   } else {
     ballGO.AddComponent<Renderer>(fireBallSprite, Vector2(0.7f, 0.7f));
@@ -349,16 +350,21 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
 
 void LevelManager::CheckBalls() {
   // #region CheckBall
+
+
   bool ballFell = false;
-  for (GameObject *ball : balls) {
+  for (Ball *ball : balls) {
+
+    ball->speed = 10.0f + (platformSpeed - 0.5f) * 3.0f;
+
     if (ball->transform->position.get().y > Data::PaddleY - 4) continue;
     ball->transform->position = Vector3(ball->transform->position.get().x, 0, 0);
-    Destroy(*ball);
+    Destroy(*ball->gameObject);
     ballFell = true;
   }
   if (!ballFell || isGameOver) return;
 
-  std::erase_if(balls, [](const GameObject *ball) { return (bool)ball->isDeleted; });
+  std::erase_if(balls, [](const Ball *ball) { return (bool)ball->isDeleted; });
   if (balls.empty()) {
 
     PlayerController::Singleton->RemovePlayer();
@@ -426,8 +432,9 @@ void LevelManager::FireFireBall() {
 
 void LevelManager::MovePlatforms() {
   // #region MovePlatforms
-  platformSpeed += 1.0f / 240.0f * Time::deltaTime;
-  currentWaitTime -= 1.0f / 60.0f * Time::deltaTime;
+  platformSpeed += 1.0f / 60.0f * 0.15f * Time::deltaTime;
+  currentWaitTime -= 1.0f / 60.0f * 0.4f * Time::deltaTime;
+  currentWaitTime = std::max(currentWaitTime, 2.0f);
 
   for (auto &[platform, _] : platforms) {
     platform->transform->position += Vector3::Down * platformSpeed * Time::deltaTime;

@@ -16,7 +16,7 @@ public:
   Crow2D::Types::Vector2 direction = Crow2D::Types::Vector2::Down;
   Crow2D::Components::Renderer *renderer;
   BallType ballType = BallType::Normal;
-  float speed = 15;
+  float speed = 0;
 
   static constexpr short Kicks = 8;
   Crow2D::Components::SoundEmitter *emitter = nullptr;
