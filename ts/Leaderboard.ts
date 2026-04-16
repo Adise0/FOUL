@@ -17,7 +17,7 @@ const token = setInterval(() => {
 
 window.bridge.on("Leaderboard", (payload) => {
   isLoaded = true;
-  const data: Player[] = JSON.parse(payload);
+  const data: Player[] = JSON.parse(payload!);
   console.log("Received data! " + data.length);
 
   data.sort((a, b) => {

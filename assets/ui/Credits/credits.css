@@ -1,0 +1,35 @@
+.holder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 40px;
+  gap: 2px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 510px;
+  width: calc(100% - 115px);
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 20px 40px;
+  overflow: auto;
+}
+.container p {
+  color: white;
+  font-size: 20px;
+}
+.container p span {
+  color: var(--accent);
+}
+
+.credits {
+  font-size: 48px;
+  color: var(--accent);
+  text-shadow: -3px 3px 0 black;
+}
+
+/*# sourceMappingURL=credits.css.map */
