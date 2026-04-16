@@ -3,6 +3,8 @@
 #include "Recrut.h"
 #include "UIManager.h"
 #include <Crow2D/Crow2D.h>
+#include <Crow2D/components/SoundEmitter.h>
+#include <Crow2D/dataObjects/AudioClip.h>
 #include <Crow2D/properties/PrivateSetProperty.h>
 #include <Crow2D/properties/Property.h>
 #include <cmath>
@@ -34,6 +36,8 @@ private:
   static constexpr float PlatformWidth = 4;
 
 public:
+  Crow2D::Components::SoundEmitter *ambianceEmitter = nullptr;
+  Crow2D::Components::SoundEmitter *whistleEmitter = nullptr;
   PRIVATE_SET_PROPERTY(LevelManager, bool, isGameOver);
   PROPERTY(LevelManager, const float, points, GetPoints, SetPoints);
 
@@ -56,6 +60,11 @@ private:
   Crow2D::Types::Sprite *ballPlatformSprite;
   Crow2D::Types::Sprite *fireballPlatformSprite;
   Crow2D::Types::Sprite *playerPlatformSprite;
+
+  Crow2D::Sound::Audioclip *amiance;
+  Crow2D::Sound::Audioclip *startWhistle;
+  Crow2D::Sound::Audioclip *endWhistle;
+  Crow2D::Sound::Audioclip *foulWhistle;
 
   int _prevRespawn = 0;
   bool pauseGrace = false;

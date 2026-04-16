@@ -6,6 +6,8 @@
 #include "LevelManager.h"
 #include "PlayerController.h"
 #include "UIManager.h"
+#include <Crow2D/components/SoundEmitter.h>
+#include <Crow2D/dataObjects/AudioClip.h>
 
 
 namespace FOUL {
@@ -16,6 +18,7 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Rendering;
 using namespace Behaviours;
+using namespace Crow2D::Sound;
 
 MainScene::MainScene() : Scene("Main Scene") {}
 void MainScene::Load() {
@@ -47,6 +50,11 @@ void MainScene::LoadBackground() {
   uiManager.pauseRenderer = &pauseRenderer;
 
   global.transform->position -= Vector3(0, 0, 100);
+
+  SoundEmitter &ambianceEmitter = global.AddComponent<SoundEmitter>();
+  SoundEmitter &whistleEmitter = global.AddComponent<SoundEmitter>();
+  levelManager.ambianceEmitter = &ambianceEmitter;
+  levelManager.whistleEmitter = &whistleEmitter;
   // #endregion
 }
 

@@ -5,6 +5,7 @@
 #include "PlayerController.h"
 #include "Recrut.h"
 #include "UIManager.h"
+#include <Crow2D/dataObjects/AudioClip.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
 #include <algorithm>
@@ -22,6 +23,7 @@ using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
 using namespace Crow2D::Utils;
+using namespace Crow2D::Sound;
 
 static constexpr float DEG2RAD = 3.14159265358979323846f / 180.0f;
 static const int weights[] = {
@@ -78,6 +80,12 @@ void LevelManager::Awake() {
       new Sprite("sprites/platforms/fire.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
   playerPlatformSprite =
       new Sprite("sprites/platforms/player.png", SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+
+
+  amiance = new Audioclip("sounds/ambiance.wav", true);
+  startWhistle = new Audioclip("sounds/start_whistle.wav");
+  endWhistle = new Audioclip("sounds/end_whistle.wav");
+  foulWhistle = new Audioclip("sounds/foul.wav");
   // #endregion
 }
 
@@ -95,6 +103,11 @@ void LevelManager::Start() {
   uiManager->pauseRenderer->bridge->On(
       "__loaded", [this](const std::string, const std::string) { Pause(true); });
 
+
+
+  ambianceEmitter->SetVolume(0.5f);
+  ambianceEmitter->Play(amiance);
+
   // #endregion
 }
 
@@ -102,9 +115,6 @@ void LevelManager::Update() {
   // #region Update
   if (isGameOver) {
     if (InputManager::GetKey("Escape").wasPressedThisFrame) {
-
-
-
       MenuScene *menuScene = new MenuScene();
       Scenes::SceneManager::SetSceneAsActive(*menuScene);
 
@@ -351,6 +361,7 @@ void LevelManager::CheckBalls() {
     PlayerController::Singleton->RemovePlayer();
     if (isGameOver) return;
     Ball *ball = SpawnBall(BallType::Normal, Vector2::Zero);
+    whistleEmitter->Play(foulWhistle);
     isRespawning.set(true);
     // TODO: wait a second
   }
@@ -431,6 +442,8 @@ void LevelManager::Pause(const bool &isTutorial) {
 
 void LevelManager::GameOver() {
   // #region GameOver
+  whistleEmitter->Play(endWhistle);
+
   isGameOver.set(true);
   int pb = uiManager->GetPB(Data::currentPlayer);
   bool isPb = pb == -1 || pb < points;
@@ -442,6 +455,8 @@ void LevelManager::GameOver() {
 
 void LevelManager::Resume() {
   // #region Resume
+
+  whistleEmitter->Play(foulWhistle);
   uiManager->SetPause(false);
   Time::timeScale = 1.0f;
   pauseGrace = true;
@@ -463,6 +478,11 @@ void LevelManager::OnDestroy() {
   delete ballPlatformSprite;
   delete playerPlatformSprite;
   delete fireballPlatformSprite;
+
+  delete amiance;
+  delete startWhistle;
+  delete endWhistle;
+  delete foulWhistle;
   // #endregion
 }
 
