@@ -19,7 +19,8 @@ public:
   float speed = 15;
 
   static constexpr short Kicks = 8;
-  Crow2D::Components::SoundEmitter *emitter;
+  Crow2D::Components::SoundEmitter *emitter = nullptr;
+  Crow2D::Sound::Audioclip *fire = nullptr;
   std::vector<Crow2D::Sound::Audioclip *> kicks;
 
 

@@ -26,6 +26,8 @@ void Ball::Awake() {
     Audioclip *kick = new Audioclip(name);
     kicks.push_back(kick);
   }
+
+  fire = new Audioclip("sounds/fireball.mp3");
   // #endregion
 }
 
@@ -52,6 +54,9 @@ void Ball::Start() {
   }
 
   renderer = gameObject->GetComponent<Renderer>();
+  if (ballType == BallType::Fire) {
+    emitter->Play(fire);
+  }
   // #endregion
 }
 
@@ -83,7 +88,7 @@ void Ball::Move() {
     return;
   }
 
-  if (didBounce) {
+  if (didBounce && ballType == BallType::Normal) {
     short rnd = std::rand() % Kicks;
     emitter->Play(kicks[rnd]);
   }
@@ -151,6 +156,7 @@ void Ball::OnDestroy() {
   for (Audioclip *clip : kicks) {
     delete clip;
   }
+  delete fire;
 }
 
 } // namespace FOUL::Behaviours
