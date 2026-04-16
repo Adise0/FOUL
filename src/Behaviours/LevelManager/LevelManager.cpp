@@ -426,7 +426,7 @@ void LevelManager::FireFireBall() {
 
 void LevelManager::MovePlatforms() {
   // #region MovePlatforms
-  platformSpeed += 1.0f / 120.0f * Time::deltaTime;
+  platformSpeed += 1.0f / 240.0f * Time::deltaTime;
   currentWaitTime -= 1.0f / 60.0f * Time::deltaTime;
 
   for (auto &[platform, _] : platforms) {
