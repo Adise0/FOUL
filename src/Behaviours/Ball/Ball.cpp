@@ -2,17 +2,32 @@
 #include "Data.h"
 #include "LevelManager.h"
 #include "PlayerController.h"
+#include <Crow2D/dataObjects/AudioClip.h>
 #include <Crow2D/dataObjects/Vectors.h>
 #include <SDL3/SDL_pixels.h>
 #include <cstdio>
+#include <cstdlib>
+#include <string>
 
 namespace FOUL::Behaviours {
 using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
+using namespace Crow2D::Sound;
 
 constexpr float RAD2DEG = 180.0f / 3.14159265358979f;
+
+
+void Ball::Awake() {
+  // #region Awake
+  for (short i = 0; i < Kicks; i++) {
+    std::string name = "sounds/kicks/Kick_" + std::to_string(i) + ".wav";
+    Audioclip *kick = new Audioclip(name);
+    kicks.push_back(kick);
+  }
+  // #endregion
+}
 
 void Ball::Start() {
   // #region Awake
@@ -53,11 +68,25 @@ void Ball::Move() {
   transform->Translate(direction * speed * Time::deltaTime);
   Vector2 pos = Vector2(transform->position);
 
-  if ((pos.x <= -Data::XLimit && direction.x < 0) || (pos.x >= Data::XLimit && direction.x > 0))
+  bool didBounce = false;
+  if ((pos.x <= -Data::XLimit && direction.x < 0) || (pos.x >= Data::XLimit && direction.x > 0)) {
     direction.x = -direction.x;
-  if (ballType != BallType::Fire && pos.y >= 9.75f && direction.y > 0) direction.y = -direction.y;
+    didBounce = true;
+  }
+  if (ballType != BallType::Fire && pos.y >= 9.75f && direction.y > 0) {
+    direction.y = -direction.y;
+    didBounce = true;
+  }
 
-  if (ballType == BallType::Fire && pos.y > 10) Destroy(gameObject);
+  if (ballType == BallType::Fire && pos.y > 10) {
+    Destroy(gameObject);
+    return;
+  }
+
+  if (didBounce) {
+    short rnd = std::rand() % Kicks;
+    emitter->Play(kicks[rnd]);
+  }
 
   if (Vector3::Distance(transform->position, _prevPos) < 0.1f) return;
   _prevPos = transform->position;
@@ -111,11 +140,17 @@ void Ball::OnTriggerEnter(const Collider &other) {
 
   direction = direction - normal * (2.0f * direction.Dot(normal));
 
+  short rnd = std::rand() % Kicks;
+  emitter->Play(kicks[rnd]);
 
   LevelManager::Singleton->HitPlatform(go, this);
   // #endregion
 }
 
-void Ball::OnDestroy() {}
+void Ball::OnDestroy() {
+  for (Audioclip *clip : kicks) {
+    delete clip;
+  }
+}
 
 } // namespace FOUL::Behaviours

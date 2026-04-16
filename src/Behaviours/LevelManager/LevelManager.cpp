@@ -5,6 +5,7 @@
 #include "PlayerController.h"
 #include "Recrut.h"
 #include "UIManager.h"
+#include <Crow2D/components/SoundEmitter.h>
 #include <Crow2D/dataObjects/AudioClip.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_surface.h>
@@ -324,7 +325,9 @@ Ball *LevelManager::SpawnBall(const BallType &type, const Vector2 &pos, const Ve
   RigidBody &ballRB = ballGO.AddComponent<RigidBody>();
   ballRB.collisionMode = CollisionMode::Continuous;
 
+  SoundEmitter &emitter = ballGO.AddComponent<SoundEmitter>();
   Ball *ball = &ballGO.AddComponent<Ball>();
+  ball->emitter = &emitter;
   ball->ballType = type;
 
   ballGO.transform->position = Vector3(pos);

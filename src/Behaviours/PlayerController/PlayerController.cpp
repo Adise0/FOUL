@@ -187,6 +187,9 @@ void PlayerController::BounceNormalBall(Ball *ball) const {
     Vector2 varianceDir(std::sin(rad), std::cos(rad));
     ball->direction = dotForward >= 0 ? (forward + varianceDir).Normalized() : -forward;
   }
+
+  short rnd = std::rand() % Ball::Kicks;
+  ball->emitter->Play(ball->kicks[rnd]);
   // #endregion
 }
 
