@@ -14,17 +14,33 @@
       <img src="../img/Title.png" alt="FOUL" class="title" />
       <div class="optionsContainer">
         <section class="options">
-          <a href="../Play/Play.html" class="play">PLAY</a>
+          <a
+            href="../Play/Play.html"
+            class="play"
+            onmouseenter="Send('PlaySound', 'select')"
+            onclick="Send('PlaySound', 'click')"
+            >PLAY</a
+          >
           <a
             href="../Leaderboard/Leaderboard.html"
             id="leaderboard"
             class="normal"
+            onmouseenter="Send('PlaySound', 'select')"
+            onclick="Send('PlaySound', 'click')"
             >LEADERBOARD</a
           >
-          <a href="../Credits/Credits.html" class="normal">CREDITS</a>
+          <a
+            href="../Credits/Credits.html"
+            class="normal"
+            onmouseenter="Send('PlaySound', 'select')"
+            onclick="Send('PlaySound', 'click')"
+            >CREDITS</a
+          >
         </section>
       </div>
-      <button id="quit" class="back">QUIT</button>
+      <button id="quit" class="back" onmouseenter="Send('PlaySound', 'select')">
+        QUIT
+      </button>
     </main>
   </body>
 </html>

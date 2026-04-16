@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Crow2D/Crow2D.h>
-#include <Crow2D/Crow2dUtils.h>
+#include <Crow2D/dataObjects/AudioClip.h>
 #include <string>
 #include <vector>
 
@@ -16,12 +16,17 @@ public:
 
 private:
   const std::string SavesFile = Crow2D::Crow2dUtils::RootDirectory + "/players.bin";
+  Crow2D::Components::SoundEmitter *emitter = nullptr;
+
+  Crow2D::Sound::Audioclip *select = nullptr;
+  Crow2D::Sound::Audioclip *click = nullptr;
   // #endregion
 
   // #region Crow2D
 private:
   void Awake() override;
   // void Update() override;
+  void OnDisable() override;
   // #endregion
 
   // #region Methods
@@ -41,6 +46,8 @@ private:
   static void OnQuit(const std::string &type, const std::string &payload);
   static void OnPlay(const std::string &type, const std::string &name);
   void OnLeaderboard();
+
+  void PlaySound(const std::string &name);
 
 
   // #endregion

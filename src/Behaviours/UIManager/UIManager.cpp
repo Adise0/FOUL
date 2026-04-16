@@ -2,6 +2,8 @@
 #include "Data.h"
 #include "MainScene.h"
 #include <Crow2D/SceneManager.h>
+#include <Crow2D/components/SoundEmitter.h>
+#include <Crow2D/dataObjects/AudioClip.h>
 #include <cstddef>
 #include <cstdio>
 #include <fstream>
@@ -13,16 +15,24 @@ using namespace Crow2D;
 using namespace Crow2D::Components;
 using namespace Crow2D::Types;
 using namespace Crow2D::Inputs;
+using namespace Crow2D::Sound;
 
 void UIManager::Awake() {
   // #region Awake
 
   if (!mainRenderer) throw std::runtime_error("UIManager requires a UIRenderer component");
 
+  emitter = &gameObject->AddComponent<SoundEmitter>();
+  select = new Audioclip("sounds/ui/select.mp3");
+  click = new Audioclip("sounds/ui/click.mp3");
+
   mainRenderer->bridge->On("__quit", OnQuit);
   mainRenderer->bridge->On("Play", OnPlay);
   mainRenderer->bridge->On("Leaderboard",
                            [this](const std::string, const std::string) { OnLeaderboard(); });
+
+  mainRenderer->bridge->On("PlaySound",
+                           [this](const std::string, const std::string &name) { PlaySound(name); });
   // #endregion
 }
 void UIManager::OnLeaderboard() {
@@ -118,7 +128,6 @@ void UIManager::SavePBs(const std::map<std::string, int> &pbs) const {
   // #endregion
 }
 
-
 const int UIManager::GetPB(const std::string &name) const {
   std::map<std::string, int> pbs = LoadPBs();
   auto it = pbs.find(name);
@@ -129,6 +138,16 @@ void UIManager::SavePB(const std::string &name, const int &points) const {
   std::map<std::string, int> pbs = LoadPBs();
   pbs[name] = points;
   SavePBs(pbs);
+}
+void UIManager::PlaySound(const std::string &name) {
+
+  if (name == "select") emitter->Play(select);
+  if (name == "click") emitter->Play(click);
+}
+
+void UIManager::OnDisable() {
+  delete select;
+  delete click;
 }
 
 } // namespace FOUL::Behaviours
