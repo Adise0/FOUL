@@ -1,3 +1,5 @@
 {
-  "exec": "nom run build"
+  "exec": "npm run build",
+  "watch": ["./ts"],
+  "ext": "ts"
 }

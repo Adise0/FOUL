@@ -2,10 +2,10 @@
   "name": "foul",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
+    "style": "sass ./scss:./assets/ui --watch",
     "build": "tsc",
-    "dev": "nodemon -q ."
+    "dev": "nodemon -q"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/Adise0/FOUL#readme",
   "devDependencies": {
+    "crow2d-types": "^1.0.1",
     "nodemon": "^3.1.14",
+    "sass": "^1.99.0",
     "typescript": "^6.0.2"
   }
 }

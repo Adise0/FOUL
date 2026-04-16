@@ -1,0 +1,50 @@
+.holder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 40px;
+  gap: 2px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 510px;
+  width: 475px;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 20px 40px;
+  overflow: auto;
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  font-size: 32px;
+  color: white;
+}
+
+.gold {
+  color: #efbf04;
+}
+
+.silver {
+  color: #e0e0e0;
+}
+
+.bronze {
+  color: #fca956;
+}
+
+.leaderboard {
+  font-size: 48px;
+  color: var(--accent);
+  text-shadow: -3px 3px 0 black;
+}
+
+/*# sourceMappingURL=Leaderboard.css.map */

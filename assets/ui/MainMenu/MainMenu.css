@@ -1,0 +1,17 @@
+.optionsContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 40px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.play {
+  font-size: 96px;
+}
+
+/*# sourceMappingURL=MainMenu.css.map */
