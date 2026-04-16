@@ -30,7 +30,6 @@ void MenuScene::LoadUI() {
   UIRenderer &mainRenderer = uiHolderGO.AddComponent<UIRenderer>("ui/MainMenu/MainMenu.html");
 
   UIManager &uiManager = uiHolderGO.AddComponent<UIManager>();
-  uiHolderGO.AddComponent<Renderer>(Primitives::Square, Vector2(1, 1));
   uiManager.mainRenderer = &mainRenderer;
 }
 } // namespace FOUL
