@@ -20,7 +20,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 
-add_executable(FOUL ${SOURCES})
+add_executable(FOUL ${SOURCES}  ./release/icon.rc)
 
 set_target_properties(FOUL PROPERTIES
   WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>

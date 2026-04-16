@@ -2,10 +2,10 @@ Set oFS = CreateObject("Scripting.FileSystemObject")
 Set oWS = WScript.CreateObject("WScript.Shell")
 
 sInstallPath = oFS.GetAbsolutePathName(".")
+oWS.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FOUL\InstallPath", sInstallPath
 oWS.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FOUL\DisplayName", "FOUL"
-oWS.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FOUL\UninstallString", sInstallPath & "\uninstall.vbs"
+oWS.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FOUL\UninstallString", "wscript.exe """ & sInstallPath & "\uninstall.vbs"""
 oWS.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FOUL\DisplayIcon", sInstallPath & "\FOUL.exe"
-
 
 answer = MsgBox("Create Start Menu shortcut?", vbYesNo)
 If answer = vbYes Then
