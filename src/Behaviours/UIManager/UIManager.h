@@ -20,6 +20,7 @@ private:
 
   Crow2D::Sound::Audioclip *select = nullptr;
   Crow2D::Sound::Audioclip *click = nullptr;
+  Crow2D::Sound::Audioclip *music = nullptr;
   // #endregion
 
   // #region Crow2D

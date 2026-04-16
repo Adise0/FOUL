@@ -23,9 +23,22 @@ void UIManager::Awake() {
   if (!mainRenderer) throw std::runtime_error("UIManager requires a UIRenderer component");
 
   emitter = &gameObject->AddComponent<SoundEmitter>();
+  SoundEmitter &musicEmitter = gameObject->AddComponent<SoundEmitter>();
+
+
   select = new Audioclip("sounds/ui/select.mp3");
   click = new Audioclip("sounds/ui/click.mp3");
 
+  float vol = 0.7f;
+
+  if (gameObject->scene->name == "Menu Scene") music = new Audioclip("sounds/ui/menu.mp3", true);
+  else {
+    music = new Audioclip("sounds/ui/inGame.mp3", true);
+    vol = 0.5f;
+  }
+
+  musicEmitter.SetVolume(vol);
+  musicEmitter.Play(music);
   mainRenderer->bridge->On("__quit", OnQuit);
   mainRenderer->bridge->On("Play", OnPlay);
   mainRenderer->bridge->On("Leaderboard",
@@ -148,6 +161,7 @@ void UIManager::PlaySound(const std::string &name) {
 void UIManager::OnDisable() {
   delete select;
   delete click;
+  delete music;
 }
 
 } // namespace FOUL::Behaviours

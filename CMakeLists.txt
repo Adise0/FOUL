@@ -47,3 +47,25 @@ target_link_libraries(FOUL PRIVATE Crow2D::Crow2D)
 
 crow2d_copy_runtime(FOUL)
 crow2d_copy_assets(FOUL)
+
+
+install(TARGETS FOUL
+  RUNTIME DESTINATION .
+)
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/"
+  DESTINATION .
+  FILES_MATCHING
+  PATTERN "*.dll"
+  PATTERN "CMakeFiles" EXCLUDE
+  PATTERN "default" EXCLUDE
+)
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/assets"
+  DESTINATION .
+  PATTERN "*.css.map" EXCLUDE
+)
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/resources"
+  DESTINATION .
+)
